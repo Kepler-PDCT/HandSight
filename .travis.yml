@@ -1,5 +1,7 @@
 language: android
 dist: trusty
+script:
+  - chmod +x ./gradlew build connectedCheck
 android:
   components:
     # Uncomment the lines below if you want to
