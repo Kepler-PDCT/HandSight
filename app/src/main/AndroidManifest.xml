@@ -9,6 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".LearningActivity"></activity>
+        <activity
+            android:name=".Learning"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_learning"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".MenuActivity"
+            android:label="@string/title_activity_menu" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
