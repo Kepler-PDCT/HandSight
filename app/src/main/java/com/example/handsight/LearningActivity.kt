@@ -1,39 +1,76 @@
 package com.example.handsight
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
-import java.util.*
+import android.widget.TextView
+
 
 class LearningActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
+        setQuestions()
     }
 
-    val QUESTIONS = 10
-    val questionArray  = (0..QUESTIONS).map { Random().nextInt() }
+    private val numberOfQuestion = 10
 
-    var count = 0
-    var correctGuessed = 0
+    private var count = 1
+    private var current = ""
+    private var correctGuessed = 0
 
-    fun nextQuestion(): Pair<List<Int>, Int>{
-        var questionArray  = (0..4).map { Random().nextInt(27) }.toList()
-        val right = questionArray[0]
-        return return Pair(questionArray, right)
+    private fun nextQuestion(): Pair<List<Char>, Char> {
+        var questionArray = (0..3).map { ((0..25).random() + 65).toChar() }.toList()
+        //var questionArray = (0..3).map { (Random().nextInt(26) + 65).toChar() }.toList()
+        val right = questionArray[(0..3).random()]
+        return Pair(questionArray, right)
     }
 
-    fun switchImage(view: View) {
-        count++
-        if (count > QUESTIONS){
-            val myIntent = Intent(this,  MainActivity::class.java)
-            startActivity(myIntent)
+    fun madeGuess(view: View) {
+        val button = findViewById<Button>(view.id)
+        if (button.text == current) {
+            correctGuessed++
         }
+        count++
+        if (count > numberOfQuestion) {
+            count = 1
+            correctGuessed = 0
+        }
+        setQuestions()
+    }
 
-        var a = findViewById<ImageView>(R.id.imageView)
-        a.setImageResource(R.drawable.hand2)
+    private fun updateScore() {
+        findViewById<TextView>(R.id.score).setText(
+            "$correctGuessed / $count out of $numberOfQuestion"
+        )
+    }
+
+    private fun setQuestions() {
+        var questions = nextQuestion()
+        updateScore()
+
+
+        Log.d("AAAA", questions.first.toString())
+        findViewById<Button>(R.id.guess1).setText(questions.first[0].toString())
+        findViewById<Button>(R.id.guess2).setText(questions.first[1].toString())
+        findViewById<Button>(R.id.guess3).setText(questions.first[2].toString())
+        findViewById<Button>(R.id.guess4).setText(questions.first[3].toString())
+        current = questions.second.toString()
+
+        val uri = "@drawable/" + current.toLowerCase()
+        val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
+        val res = resources.getDrawable(imageResource)
+
+        findViewById<ImageView>(R.id.imageView).setImageDrawable(res); // set as image
+    }
+
+    fun updateUI(button: Button) {
+        count++
+
+
     }
 }
