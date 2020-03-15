@@ -25,7 +25,6 @@ class LearningActivity : AppCompatActivity() {
 
     private fun nextQuestion(): Pair<List<Char>, Char> {
         var questionArray = (0..3).map { ((0..25).random() + 65).toChar() }.toList()
-        //var questionArray = (0..3).map { (Random().nextInt(26) + 65).toChar() }.toList()
         val right = questionArray[(0..3).random()]
         return Pair(questionArray, right)
     }
@@ -53,12 +52,10 @@ class LearningActivity : AppCompatActivity() {
         var questions = nextQuestion()
         updateScore()
 
-
-        Log.d("AAAA", questions.first.toString())
-        findViewById<Button>(R.id.guess1).setText(questions.first[0].toString())
-        findViewById<Button>(R.id.guess2).setText(questions.first[1].toString())
-        findViewById<Button>(R.id.guess3).setText(questions.first[2].toString())
-        findViewById<Button>(R.id.guess4).setText(questions.first[3].toString())
+        findViewById<Button>(R.id.guess1).text = questions.first[0].toString()
+        findViewById<Button>(R.id.guess2).text = questions.first[1].toString()
+        findViewById<Button>(R.id.guess3).text = questions.first[2].toString()
+        findViewById<Button>(R.id.guess4).text = questions.first[3].toString()
         current = questions.second.toString()
 
         val uri = "@drawable/" + current.toLowerCase()
