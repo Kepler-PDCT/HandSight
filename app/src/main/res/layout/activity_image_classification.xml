@@ -8,9 +8,16 @@
 
     <ViewStub
         android:id="@+id/image_classification_texture_view_stub"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
         android:layout="@layout/texture_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
