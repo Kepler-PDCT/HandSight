@@ -3,9 +3,6 @@ package com.example.handsight
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.View
 
 
@@ -17,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun clicked(view: View) {
-        val myIntent = Intent(this,  LearningActivity::class.java)
+        val myIntent = Intent(this,  GuessingGameActivity::class.java)
         startActivity(myIntent)
     }
 
