@@ -9,21 +9,72 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
+
+        android:layout_height="350dp"
+
+        android:layout_marginTop="5dp"
+        android:src="@drawable/a"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/score" />
+
+
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-
-        android:src="@drawable/hand"
+        android:layout_marginTop="5dp"
+        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button2"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="switchImage"
-        android:text="Button"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:padding="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+        <Button
+            android:id="@+id/guess1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="madeGuess"
+            android:text="Guess 1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/guess2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="madeGuess"
+            android:text="Guess 2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guess1" />
+
+        <Button
+            android:id="@+id/guess3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="madeGuess"
+            android:text="Guess3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guess2" />
+
+        <Button
+            android:id="@+id/guess4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="madeGuess"
+            android:text="Guess 4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guess3" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
