@@ -51,11 +51,11 @@ class LearningActivity : AppCompatActivity() {
     private fun setQuestions() {
         var questions = nextQuestion()
         updateScore()
-        
-        findViewById<Button>(R.id.guess1).setText(questions.first[0].toString())
-        findViewById<Button>(R.id.guess2).setText(questions.first[1].toString())
-        findViewById<Button>(R.id.guess3).setText(questions.first[2].toString())
-        findViewById<Button>(R.id.guess4).setText(questions.first[3].toString())
+
+        findViewById<Button>(R.id.guess1).text = questions.first[0].toString()
+        findViewById<Button>(R.id.guess2).text = questions.first[1].toString()
+        findViewById<Button>(R.id.guess3).text = questions.first[2].toString()
+        findViewById<Button>(R.id.guess4).text = questions.first[3].toString()
         current = questions.second.toString()
 
         val uri = "@drawable/" + current.toLowerCase()
