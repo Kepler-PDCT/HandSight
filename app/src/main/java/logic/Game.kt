@@ -17,7 +17,17 @@ abstract class Game<T> {
     var finished = false
         private set
 
-    abstract fun nextQuestion(): Question<T>
+    private val questions: List<Question<T>> = (0..numberOfQuestions).map { nextQuestion() }
+
+    fun getQuestion(): Question<T> {
+        return questions[count - 1]
+    }
+
+
+    abstract protected fun nextQuestion(): Question<T>
+
+    abstract fun makeGuess(guess: T): Boolean
+
 
     protected fun updateScore(incrementalScore: Int) {
         score += incrementalScore
@@ -30,8 +40,9 @@ abstract class Game<T> {
         }
     }
 
-    protected fun reset() {
+    fun reset() {
         count = 1
         finished = false
+        score = 0
     }
 }

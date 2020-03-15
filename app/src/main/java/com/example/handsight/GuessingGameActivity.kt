@@ -7,67 +7,51 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import logic.GuessingGame
 
 
-class LearningActivity : AppCompatActivity() {
+class GuessingGameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_learning)
-        setQuestions()
+        updateUI()
     }
 
-    private val numberOfQuestion = 10
-
-    private var count = 1
-    private var current = ""
-    private var correctGuessed = 0
-
-    private fun nextQuestion(): Pair<List<Char>, Char> {
-        var questionArray = (0..3).map { ((0..25).random() + 65).toChar() }.toList()
-        val right = questionArray[(0..3).random()]
-        return Pair(questionArray, right)
-    }
+    private val game = GuessingGame()
 
     fun madeGuess(view: View) {
-        val button = findViewById<Button>(view.id)
-        if (button.text == current) {
-            correctGuessed++
+        val text = findViewById<Button>(view.id).text
+        game.makeGuess(text.single())
+
+        if (game.finished) {
+            // Redirect to Score view.
+            // Until then just reset game.
+            game.reset()
         }
-        count++
-        if (count > numberOfQuestion) {
-            count = 1
-            correctGuessed = 0
-        }
-        setQuestions()
+        updateUI()
     }
 
-    private fun updateScore() {
+    private fun setScore() {
         findViewById<TextView>(R.id.score).setText(
-            "$correctGuessed / $count out of $numberOfQuestion"
+            "${game.score} / ${game.count} out of ${game.numberOfQuestions}"
         )
     }
 
-    private fun setQuestions() {
-        var questions = nextQuestion()
-        updateScore()
+    private fun updateUI() {
+        setScore()
 
-        findViewById<Button>(R.id.guess1).text = questions.first[0].toString()
-        findViewById<Button>(R.id.guess2).text = questions.first[1].toString()
-        findViewById<Button>(R.id.guess3).text = questions.first[2].toString()
-        findViewById<Button>(R.id.guess4).text = questions.first[3].toString()
-        current = questions.second.toString()
+        val alternatives = game.getQuestion().alternatives!!
 
-        val uri = "@drawable/" + current.toLowerCase()
+        findViewById<Button>(R.id.guess1).text = alternatives[0].toString()
+        findViewById<Button>(R.id.guess2).text = alternatives[1].toString()
+        findViewById<Button>(R.id.guess3).text = alternatives[2].toString()
+        findViewById<Button>(R.id.guess4).text = alternatives[3].toString()
+
+        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
         val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
         val res = resources.getDrawable(imageResource)
 
         findViewById<ImageView>(R.id.imageView).setImageDrawable(res); // set as image
-    }
-
-    fun updateUI(button: Button) {
-        count++
-
-
     }
 }
