@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 
 
-class LearningActivity : AppCompatActivity() {
+class GuessingGameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
