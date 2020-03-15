@@ -40,7 +40,7 @@ abstract class Game<T> {
         }
     }
 
-    protected fun reset() {
+    fun reset() {
         count = 1
         finished = false
         score = 0
