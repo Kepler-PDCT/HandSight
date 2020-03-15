@@ -51,9 +51,7 @@ class LearningActivity : AppCompatActivity() {
     private fun setQuestions() {
         var questions = nextQuestion()
         updateScore()
-
-
-        Log.d("AAAA", questions.first.toString())
+        
         findViewById<Button>(R.id.guess1).setText(questions.first[0].toString())
         findViewById<Button>(R.id.guess2).setText(questions.first[1].toString())
         findViewById<Button>(R.id.guess3).setText(questions.first[2].toString())
