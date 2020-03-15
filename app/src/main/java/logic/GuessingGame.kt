@@ -6,4 +6,14 @@ class GuessingGame: Game<Char>() {
         val right = questionArray[(0..3).random()]
         return Question(right, questionArray)
     }
+
+    override fun makeGuess(guess: Char): Boolean {
+        assert(!finished) // Should not be called if game is finished.
+        val isCorrect = getQuestion().correctAnswer == guess
+        if(isCorrect) {
+            updateScore(1)
+        }
+        updateCounter()
+        return isCorrect
+    }
 }
