@@ -11,10 +11,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LearningActivity"></activity>
         <activity
-            android:name=".Learning"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_learning"
-            android:theme="@style/FullscreenTheme" />
+        android:name=".Learning"
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:label="@string/title_activity_learning"
+        android:theme="@style/FullscreenTheme" />
+        <activity android:name=".ImitationGameActivity"></activity>
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu" />
@@ -26,5 +27,9 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.front" />
+    <uses-feature android:name="android.hardware.camera" />
 
 </manifest>
