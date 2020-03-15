@@ -20,14 +20,13 @@ abstract class Game<T> {
     private val questions: List<Question<T>> = (0..numberOfQuestions).map { nextQuestion() }
 
     fun getQuestion(): Question<T> {
-        return questions[count-1]
+        return questions[count - 1]
     }
 
 
     abstract protected fun nextQuestion(): Question<T>
 
     abstract fun makeGuess(guess: T): Boolean
-
 
 
     protected fun updateScore(incrementalScore: Int) {
