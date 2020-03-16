@@ -8,13 +8,14 @@
     android:fitsSystemWindows="true">
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="371dp"
+        android:id="@+id/CorrectAnswerImage"
+        android:layout_width="374dp"
 
-        android:layout_height="250dp"
+        android:layout_height="133dp"
 
         android:layout_marginTop="381dp"
         android:layout_marginBottom="16dp"
+        android:scaleType="centerInside"
         android:src="@drawable/a"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,14 +25,27 @@
 
     <ViewStub
         android:id="@+id/image_classification_texture_view_stub"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginStart="100dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="150dp"
         android:layout="@layout/texture_view"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/scoreTextView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="176dp"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

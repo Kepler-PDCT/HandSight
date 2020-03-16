@@ -1,20 +1,28 @@
 package com.example.handsight
 
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.TextureView
 import android.view.View
 import android.view.ViewStub
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
 import com.example.handsight.ImitationGameActivity.AnalysisResult
+import logic.GuessingGame
+import logic.ImitationGame
 import org.pytorch.IValue
 import org.pytorch.Module
 import org.pytorch.Tensor
 import org.pytorch.torchvision.TensorImageUtils
 import java.io.File
 import java.nio.FloatBuffer
+import java.time.Duration
 import java.util.*
 
 class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
@@ -32,9 +40,16 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     private var mInputTensorBuffer: FloatBuffer? = null
     private var mInputTensor: Tensor? = null
     private var mMovingAvgSum: Long = 0
+    private var questionStartTime : Long? = null
+    private val guessDelay = 2000
+    private var bestGuessSoFar = 99
+    var correctAnswerStartTime: Long? = null
     private val mMovingAvgQueue: Queue<Long> = LinkedList()
+    private var answerCurrentlyCorrect : Boolean = false
     override val contentViewLayoutId: Int
         get() = R.layout.activity_image_classification
+
+    private val game = ImitationGame()
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
@@ -43,8 +58,16 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("TEST", game.getQuestion().correctAnswer.toString())
+        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
+        val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
+        val res = resources.getDrawable(imageResource)
+        findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
+        findViewById<TextView>(R.id.scoreTextView)!!.setText("${game.score} / ${game.count} out of ${game.numberOfQuestions}")
+        questionStartTime = System.currentTimeMillis()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun applyToUiAnalyzeImageResult(result: AnalysisResult?) {
         mMovingAvgSum += result!!.moduleForwardDuration
         mMovingAvgQueue.add(result!!.moduleForwardDuration)
@@ -53,6 +76,47 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
         }
         Log.d("TEST", result.topNClassNames[0])
         Log.d("TEST", java.lang.Float.toString(result.topNScores[0]))
+        Log.d("TEST", game.getQuestion().correctAnswer.toString())
+        for (i in 0 until result.topNClassNames.size) {
+            if(game.isCorrect(result.topNClassNames[i]!!.single())) {
+                if(bestGuessSoFar > i) {
+                    bestGuessSoFar = i
+                }
+            }
+        }
+        if(game.isCorrect(result.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
+            correctAnswerStartTime = System.currentTimeMillis()
+            Log.d("TEST", correctAnswerStartTime.toString())
+            answerCurrentlyCorrect = true
+            Log.d("TEST", answerCurrentlyCorrect.toString())
+        } else if (game.isCorrect(result.topNClassNames[0]!!.single())) {
+            //Top answer correct for 2 seconds
+            if(System.currentTimeMillis()-correctAnswerStartTime!! > guessDelay) {
+                Log.d("TEST", "making guess")
+                game.makeGuess(result.topNClassNames[0]!!.single())
+                finishQuestion()
+            }
+        } else if(System.currentTimeMillis() - questionStartTime!! > 10000) {
+            game.setScoreAccordingToPosition(bestGuessSoFar)
+            finishQuestion()
+        }
+
+    }
+
+    private fun finishQuestion () {
+        game.advanceGame()
+        if(game.finished) {
+            game.reset()
+        }
+        bestGuessSoFar = 99
+        questionStartTime = System.currentTimeMillis()
+        findViewById<TextView>(R.id.scoreTextView)!!.setText("${game.score} / ${game.count} out of ${game.numberOfQuestions}")
+        Log.d("TEST", game.score.toString())
+        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
+        val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
+        val res = resources.getDrawable(imageResource)
+        findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
+
     }
 
     protected val moduleAssetName: String
@@ -61,8 +125,6 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     /*override fun getInfoViewAdditionalText(): String {
         return moduleAssetName
     }*/
-
-
 
     @WorkerThread
     override fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): AnalysisResult? {
