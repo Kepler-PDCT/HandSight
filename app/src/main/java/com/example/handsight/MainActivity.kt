@@ -18,4 +18,9 @@ class MainActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
+    fun launchImitationMode(view: View) {
+        val myIntent = Intent(this,  ImitationGameActivity::class.java)
+        startActivity(myIntent)
+    }
+
 }
