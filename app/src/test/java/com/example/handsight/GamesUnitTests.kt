@@ -33,14 +33,15 @@ class ImitationGameUnitTest {
     @Test
     fun testAdvancement() {
         val game = ImitationGame()
-        val questionObj = game.getQuestion()
 
         for (i in 1..10) {
+            val questionObj = game.getQuestion()
             game.makeGuess(questionObj.correctAnswer)
-            game.advanceGame()
-            assertEquals(false, game.finished)
-            assertEquals(5*i, game.score)
-            assertEquals(i+1, game.count)
+            if(i < 10) {
+                assertEquals(false, game.finished)
+                assertEquals(5*i, game.score)
+                assertEquals(i+1, game.count)
+            }
         }
 
         assertEquals(true, game.finished)
