@@ -141,10 +141,6 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     protected val moduleAssetName: String
         protected get() = "android_model_2_softmax.pt"
 
-    /*override fun getInfoViewAdditionalText(): String {
-        return moduleAssetName
-    }*/
-
     @WorkerThread
     override fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): AnalysisResult? {
         return if (mAnalyzeImageErrorState) {
@@ -216,11 +212,6 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
             null
         }
     }
-
-
-   /* override fun getInfoViewCode(): Int {
-        return intent.getIntExtra(INTENT_INFO_VIEW_TYPE, -1)
-    }*/
 
     override fun onDestroy() {
         super.onDestroy()
