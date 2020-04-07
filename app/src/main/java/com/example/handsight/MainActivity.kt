@@ -23,4 +23,9 @@ class MainActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
+    fun launchChallengeMode(view: View) {
+        val myIntent = Intent(this,  ChallengeGameActivity::class.java)
+        startActivity(myIntent)
+    }
+
 }
