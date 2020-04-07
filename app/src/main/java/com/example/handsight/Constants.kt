@@ -28,7 +28,6 @@ object Constants {
         "W",
         "X",
         "Y",
-        "Z",
-        "Space"
+        "Z"
     )
 }
