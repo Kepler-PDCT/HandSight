@@ -2,7 +2,7 @@ package com.example.handsight
 
 object Constants {
     const val TAG = "PyTorchDemo"
-    var IMAGENET_CLASSES = arrayOf(
+    val IMAGENET_CLASSES = arrayOf(
         "A",
         "B",
         "C",
@@ -31,7 +31,7 @@ object Constants {
         "Z"
     )
 
-    var WORDS = arrayOf(
+    val WORDS = arrayOf(
         "seven",
         "world",
         "heart",

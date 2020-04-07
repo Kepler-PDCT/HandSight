@@ -1,32 +1,26 @@
 package com.example.handsight
 
-import android.graphics.drawable.ClipDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.SystemClock
 import android.util.Log
-import android.view.Gravity
 import android.view.TextureView
 import android.view.View
 import android.view.ViewStub
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
 import com.example.handsight.ImitationGameActivity.AnalysisResult
-import logic.GuessingGame
-import logic.ImitationGame
+import logic.ImitationChallengeGame
 import org.pytorch.IValue
 import org.pytorch.Module
 import org.pytorch.Tensor
 import org.pytorch.torchvision.TensorImageUtils
-import org.w3c.dom.Text
 import java.io.File
 import java.nio.FloatBuffer
-import java.time.Duration
 import java.util.*
 
 class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
@@ -71,7 +65,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     override val contentViewLayoutId: Int
         get() = R.layout.activity_image_classification
 
-    private val game = ImitationGame()
+    private val game = ImitationChallengeGame()
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
