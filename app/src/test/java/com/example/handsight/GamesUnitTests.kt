@@ -1,5 +1,6 @@
 package com.example.handsight
 
+import logic.ImitationGame
 import logic.GuessingGame
 import org.hamcrest.CoreMatchers.hasItem
 import org.junit.Test
@@ -11,6 +12,43 @@ import org.junit.Assert.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+
+class ImitationGameUnitTest {
+    @Test
+    fun initialize_values() {
+        val game = ImitationGame()
+        assertEquals(false, game.finished)
+        assertEquals(false, game.finished)
+        assertEquals(0, game.score)
+        assertEquals(1, game.count)
+        assertEquals(10, game.numberOfQuestions)
+    }
+
+    @Test
+    fun testCorrect() {
+        val game = ImitationGame()
+        assertEquals(true, game.isCorrect(game.getQuestion().correctAnswer))
+    }
+
+    @Test
+    fun testAdvancement() {
+        val game = ImitationGame()
+
+        for (i in 1..10) {
+            val questionObj = game.getQuestion()
+            game.makeGuess(questionObj.correctAnswer)
+            if(i < 10) {
+                assertEquals(false, game.finished)
+                assertEquals(5*i, game.score)
+                assertEquals(i+1, game.count)
+            }
+        }
+
+        assertEquals(true, game.finished)
+    }
+
+}
+
 class GuessingGameUnitTest {
     @Test
     fun initialize_values() {
