@@ -2,7 +2,6 @@ package com.example.handsight
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -14,7 +13,7 @@ class GuessingGameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.learning_mode)
+        setContentView(R.layout.activity_guessing_mode)
         updateUI()
     }
 

@@ -1,7 +1,6 @@
 package com.example.handsight
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.SystemClock
@@ -9,7 +8,6 @@ import android.util.Log
 import android.view.TextureView
 import android.view.View
 import android.view.ViewStub
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
@@ -66,7 +64,7 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
     lateinit var perfText: TextView
     lateinit var questionCountdownText : TextView
     override val contentViewLayoutId: Int
-        get() = R.layout.activity_challenge_game
+        get() = R.layout.activity_challenge_mode
 
     private val game = ImitationGame()
 
