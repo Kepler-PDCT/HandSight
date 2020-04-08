@@ -75,40 +75,27 @@
 
         <Button
             android:id="@+id/learningModeButton"
-            android:text="Learning"
-            style="@style/defaultButton" />
+            style="@style/defaultButton"
+            android:onClick="launchLearningMode"
+            android:text="Learning" />
 
         <Button
             android:id="@+id/imitationModeButton"
+            style="@style/defaultButton"
             android:onClick="launchImitationMode"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:backgroundTint="#F25767"
-            android:text="Imitation"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp" />
+            android:text="Imitation" />
 
         <Button
             android:id="@+id/challengeModeButton"
             android:onClick="launchChallengeMode"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:backgroundTint="#F25767"
+            style="@style/defaultButton"
             android:text="Challenge"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp" />
+ />
 
         <Button
             android:id="@+id/wordModeButton"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:backgroundTint="#F25767"
-            android:text="Word"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp" />
+            style="@style/defaultButton"
+            android:text="Word" />
 
     </LinearLayout>
 
@@ -119,18 +106,5 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="60dp" />
 
-
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:onClick="clicked"
-        android:text="Learning mode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

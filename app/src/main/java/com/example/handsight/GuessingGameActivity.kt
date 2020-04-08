@@ -14,7 +14,7 @@ class GuessingGameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_learning)
+        setContentView(R.layout.learning_mode)
         updateUI()
     }
 
@@ -33,8 +33,12 @@ class GuessingGameActivity : AppCompatActivity() {
     }
 
     private fun setScore() {
-        findViewById<TextView>(R.id.score).setText(
-            "${game.score} / ${game.count} out of ${game.numberOfQuestions}"
+        findViewById<TextView>(R.id.questionTextView).setText(
+            "Question ${game.count} of ${game.numberOfQuestions}"
+        )
+
+        findViewById<TextView>(R.id.scoreTextView).setText(
+            "Score: ${game.score}"
         )
     }
 
@@ -43,15 +47,14 @@ class GuessingGameActivity : AppCompatActivity() {
 
         val alternatives = game.getQuestion().alternatives!!
 
-        findViewById<Button>(R.id.guess1).text = alternatives[0].toString()
-        findViewById<Button>(R.id.guess2).text = alternatives[1].toString()
-        findViewById<Button>(R.id.guess3).text = alternatives[2].toString()
-        findViewById<Button>(R.id.guess4).text = alternatives[3].toString()
+        findViewById<View>(R.id.answer1).findViewById<Button>(R.id.button).text = alternatives[0].toString()
+        findViewById<View>(R.id.answer2).findViewById<Button>(R.id.button).text = alternatives[1].toString()
+        findViewById<View>(R.id.answer3).findViewById<Button>(R.id.button).text = alternatives[2].toString()
+        findViewById<View>(R.id.answer4).findViewById<Button>(R.id.button).text = alternatives[3].toString()
 
         val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
         val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
         val res = resources.getDrawable(imageResource)
-
-        findViewById<ImageView>(R.id.imageView).setImageDrawable(res); // set as image
+        findViewById<ImageView>(R.id.handImageView).setImageDrawable(res); // set as image
     }
 }
