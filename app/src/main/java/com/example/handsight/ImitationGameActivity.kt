@@ -69,7 +69,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     lateinit var perfText: TextView
     lateinit var questionCountdownText : TextView
     override val contentViewLayoutId: Int
-        get() = R.layout.activity_image_classification
+        get() = R.layout.imitation_mode
 
     private val game = ImitationGame()
 
