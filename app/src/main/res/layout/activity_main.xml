@@ -2,12 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/default_background"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    style="@style/defaultBackground">
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="50dp"
@@ -54,7 +53,7 @@
         android:gravity="bottom"
         android:orientation="vertical"
         android:paddingLeft="20dp"
-        android:paddingTop="10dp"
+        android:paddingTop="350dp"
         android:paddingRight="20dp"
         android:paddingBottom="10dp"
         android:translationZ="10dp"
@@ -68,28 +67,44 @@
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
             android:text="Let's start playing!"
             android:textAlignment="center"
             android:textSize="24sp" />
 
         <Button
+            android:id="@+id/learningModeButton"
+            android:text="Learning"
+            style="@style/defaultButton" />
+
+        <Button
+            android:id="@+id/imitationModeButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:backgroundTint="#F25767"
-            android:padding="30dp"
-            android:text="Tutorial"
+            android:text="Imitation"
             android:textColor="#FFFFFF"
             android:textSize="24sp" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/challengeModeButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:backgroundTint="#F25767"
-            android:padding="30dp"
-            android:text="Imitation"
+            android:text="Challenge"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/wordModeButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="#F25767"
+            android:text="Word"
             android:textColor="#FFFFFF"
             android:textSize="24sp" />
 
