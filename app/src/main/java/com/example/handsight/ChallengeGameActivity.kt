@@ -80,13 +80,16 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
         questionCountdownText = findViewById(R.id.questionCountdown)
         perfText = findViewById(R.id.PerfText)
-        Log.d("TEST", game.getQuestion().correctAnswer.toString())
-
-        findViewById<TextView>(R.id.correctAnswerText).setText(game.getQuestion().correctAnswer.toString())
-
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
+        updateUI()
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
+    }
+
+    private fun updateUI() {
+        val correctLetter = game.getQuestion().correctAnswer.toString()
+        findViewById<TextView>(R.id.CorrectLetterTextView).setText(correctLetter)
+        findViewById<TextView>(R.id.questionTextView)!!.setText("Question ${game.count} of ${game.numberOfQuestions}")
+        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score}")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -125,10 +128,7 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
 
         bestGuessSoFar = 99
         questionCountDown.start()
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
-        Log.d("TEST", game.score.toString())
-        findViewById<TextView>(R.id.correctAnswerText).setText(game.getQuestion().correctAnswer.toString())
-
+        updateUI()
     }
 
     protected val moduleAssetName: String
