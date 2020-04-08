@@ -1,32 +1,26 @@
 package com.example.handsight
 
-import android.graphics.drawable.ClipDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.SystemClock
 import android.util.Log
-import android.view.Gravity
 import android.view.TextureView
 import android.view.View
 import android.view.ViewStub
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
 import com.example.handsight.ImitationGameActivity.AnalysisResult
-import logic.GuessingGame
 import logic.ImitationGame
 import org.pytorch.IValue
 import org.pytorch.Module
 import org.pytorch.Tensor
 import org.pytorch.torchvision.TensorImageUtils
-import org.w3c.dom.Text
 import java.io.File
 import java.nio.FloatBuffer
-import java.time.Duration
 import java.util.*
 
 class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
@@ -83,14 +77,22 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
         questionCountdownText = findViewById(R.id.questionCountdown)
         perfText = findViewById(R.id.PerfText)
-        Log.d("TEST", game.getQuestion().correctAnswer.toString())
-        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
+
+        updateUI()
+        questionStartTime = System.currentTimeMillis()
+        questionCountDown.start()
+    }
+
+    private fun updateUI() {
+        val correctLetter = game.getQuestion().correctAnswer.toString()
+        val uri = "@drawable/" + correctLetter.toLowerCase()
         val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
         val res = resources.getDrawable(imageResource)
         findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
-        questionStartTime = System.currentTimeMillis()
-        questionCountDown.start()
+        findViewById<TextView>(R.id.CorrectLetterTextView).setText(correctLetter)
+
+        findViewById<TextView>(R.id.questionTextView)!!.setText("Question ${game.count} of ${game.numberOfQuestions}")
+        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score}")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -129,13 +131,8 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
 
         bestGuessSoFar = 99
         questionCountDown.start()
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
+        updateUI()
         Log.d("TEST", game.score.toString())
-        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
-        val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
-        val res = resources.getDrawable(imageResource)
-        findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
-
     }
 
     protected val moduleAssetName: String
