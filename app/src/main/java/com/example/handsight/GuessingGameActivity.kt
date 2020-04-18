@@ -2,6 +2,7 @@ package com.example.handsight
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -20,7 +21,7 @@ class GuessingGameActivity : AppCompatActivity() {
     private val game = GuessingGame()
 
     fun madeGuess(view: View) {
-        val text = findViewById<Button>(view.id).text
+        val text = (view as Button).text
         game.makeGuess(text.single())
 
         if (game.finished) {
