@@ -1,29 +1,27 @@
 package com.example.handsight
 
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.SystemClock
+import android.os.*
 import android.util.Log
 import android.view.TextureView
 import android.view.View
 import android.view.ViewStub
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
-import com.example.handsight.ImitationGameActivity.AnalysisResult
 import logic.ImitationChallengeGame
+import logic.WordGame
 import org.pytorch.IValue
 import org.pytorch.Module
 import org.pytorch.Tensor
 import org.pytorch.torchvision.TensorImageUtils
 import java.io.File
+import java.lang.Math.abs
 import java.nio.FloatBuffer
 import java.util.*
 
-class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
+class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult?>() {
+
     class AnalysisResult(
         val topNClassNames: Array<String?>,
         val topNScores: FloatArray,
@@ -38,24 +36,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     private var mInputTensor: Tensor? = null
     private var mMovingAvgSum: Long = 0
     private var questionStartTime : Long? = null
-    private var correctAnswerCountdown = object : CountDownTimer(2000,100) {
-        override fun onTick(millisUntilFinished: Long) {
-            correctAnswerCountdownText.text = (millisUntilFinished/(1000f)+1).toString()
-        }
-        override fun onFinish() {
-            game.makeGuess(predictions.topNClassNames[0]!!.single())
-            finishQuestion()
-        }
-    }
-    private var questionCountDown = object : CountDownTimer(20000,100) {
-        override fun onTick(millisUntilFinished: Long) {
-            questionCountdownText.text = (millisUntilFinished/(1000)+1).toString()
-        }
-        override fun onFinish() {
-            game.setScoreAccordingToPosition(bestGuessSoFar)
-            finishQuestion()
-        }
-    }
+
     private var bestGuessSoFar = 99
     private val mMovingAvgQueue: Queue<Long> = LinkedList()
     private var answerCurrentlyCorrect : Boolean = false
@@ -63,9 +44,21 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     lateinit var perfText: TextView
     lateinit var questionCountdownText : TextView
     override val contentViewLayoutId: Int
-        get() = R.layout.activity_image_classification
+        get() = R.layout.activity_word_game
 
-    private val game = ImitationChallengeGame()
+    private val game = WordGame()
+
+    private var questionCountDown = object : CountDownTimer(game.timerLength.toLong(),100) {
+        override fun onTick(millisUntilFinished: Long) {
+            questionCountdownText.text = (millisUntilFinished/(1000)+1).toString()
+            game.elapsedTime = game.timerLength - millisUntilFinished
+        }
+        override fun onFinish() {
+            game.advanceWord()
+            updateLetter()
+        }
+    }
+
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
@@ -74,14 +67,13 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
         questionCountdownText = findViewById(R.id.questionCountdown)
         perfText = findViewById(R.id.PerfText)
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
-        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
-        val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
-        val res = resources.getDrawable(imageResource)
-        findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
+
+        findViewById<TextView>(R.id.wordText).setText(game.getQuestion().correctAnswer.toString())
+        findViewById<TextView>(R.id.currentLetterText).setText(game.getQuestion().correctAnswer[game.wordPosition].toString())
+
         findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
@@ -95,41 +87,25 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
             mMovingAvgSum -= mMovingAvgQueue.remove()
         }
         predictions = result
-        Log.d("TEST", result.topNClassNames.toString())
-        Log.d("TEST", result.topNScores.toString())
-        for (i in 0 until predictions.topNClassNames.size) {
-            if(game.isCorrect(predictions.topNClassNames[i]!!.single())) {
-                perfText.text = predictions.topNScores[i].toString()
-                if(bestGuessSoFar > i) {
-                    bestGuessSoFar = i
-                }
-            }
-        }
-        if(game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
-            correctAnswerCountdown.start()
-            answerCurrentlyCorrect = true
-        }else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
-            correctAnswerCountdownText.text = ""
-            correctAnswerCountdown.cancel()
+
+        for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
+            Log.d("TEST", prediction)
         }
 
+        if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
+            updateLetter()
+        }
     }
 
-    private fun finishQuestion () {
-        game.advanceGame()
+    private fun updateLetter () {
         if(game.finished) {
             game.reset()
         }
-
-        bestGuessSoFar = 99
+        questionCountDown.cancel()
         questionCountDown.start()
         findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
-        Log.d("TEST", game.score.toString())
-        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
-        val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
-        val res = resources.getDrawable(imageResource)
-        findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
-
+        findViewById<TextView>(R.id.wordText).setText(game.getQuestion().correctAnswer.toString())
+        findViewById<TextView>(R.id.currentLetterText).setText(game.getQuestion().correctAnswer[game.wordPosition].toString())
     }
 
     protected val moduleAssetName: String
@@ -226,6 +202,5 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
         private const val FORMAT_FPS = "%.1fFPS"
         const val SCORES_FORMAT = "%.2f"
     }
-
 
 }
