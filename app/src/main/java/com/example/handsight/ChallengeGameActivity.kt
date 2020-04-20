@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
-import logic.ImitationGame
+import logic.ImitationChallengeGame
 import org.pytorch.IValue
 import org.pytorch.Module
 import org.pytorch.Tensor
@@ -66,7 +66,7 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
     override val contentViewLayoutId: Int
         get() = R.layout.activity_challenge_mode
 
-    private val game = ImitationGame()
+    private val game = ImitationChallengeGame()
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)

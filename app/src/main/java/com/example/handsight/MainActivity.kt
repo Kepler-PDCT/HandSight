@@ -28,4 +28,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
+    fun launchWordMode(view: View) {
+        val myIntent = Intent(this,  WordGameActivity::class.java)
+        startActivity(myIntent)
+    }
 }

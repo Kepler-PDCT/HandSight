@@ -89,11 +89,11 @@
             android:id="@+id/challengeModeButton"
             android:onClick="launchChallengeMode"
             style="@style/defaultButton"
-            android:text="Challenge"
- />
+            android:text="Challenge"/>
 
         <Button
             android:id="@+id/wordModeButton"
+            android:onClick="launchWordMode"
             style="@style/defaultButton"
             android:text="Word" />
 
