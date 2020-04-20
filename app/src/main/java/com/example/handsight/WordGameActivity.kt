@@ -71,10 +71,8 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         perfText = findViewById(R.id.PerfText)
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
-        findViewById<TextView>(R.id.wordText).setText(game.getQuestion().correctAnswer.toString())
-        findViewById<TextView>(R.id.currentLetterText).setText(game.getQuestion().correctAnswer[game.wordPosition].toString())
+        updateUI()
 
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
     }
@@ -103,9 +101,13 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         }
         questionCountDown.cancel()
         questionCountDown.start()
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
+        updateUI()
+    }
+
+    private fun updateUI() {
         findViewById<TextView>(R.id.wordText).setText(game.getQuestion().correctAnswer.toString())
         findViewById<TextView>(R.id.currentLetterText).setText(game.getQuestion().correctAnswer[game.wordPosition].toString())
+        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
     }
 
     protected val moduleAssetName: String
