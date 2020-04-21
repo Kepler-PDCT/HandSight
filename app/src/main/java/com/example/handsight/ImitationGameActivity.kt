@@ -95,14 +95,15 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
             mMovingAvgSum -= mMovingAvgQueue.remove()
         }
         predictions = result
-        Log.d("TEST", result.topNClassNames.toString())
-        Log.d("TEST", result.topNScores.toString())
+        Log.d("TEST", result.topNClassNames[0].toString())
+        Log.d("TEST", result.topNScores[0].toString())
         for (i in 0 until predictions.topNClassNames.size) {
             if(game.isCorrect(predictions.topNClassNames[i]!!.single())) {
                 perfText.text = predictions.topNScores[i].toString()
                 if(bestGuessSoFar > i) {
                     bestGuessSoFar = i
                 }
+                Log.d("size", predictions.topNClassNames.size.toString())
             }
         }
         if(game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
@@ -111,12 +112,14 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
         }else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
             correctAnswerCountdownText.text = ""
             correctAnswerCountdown.cancel()
+            answerCurrentlyCorrect = false
         }
-
+        game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
     }
 
     private fun finishQuestion () {
         game.advanceGame()
+        game.performanceScore = 0
         if(game.finished) {
             game.reset()
         }
@@ -134,6 +137,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
 
     protected val moduleAssetName: String
         protected get() = "android_model_2_softmax.pt"
+        //protected get() = "2020-04-21model.pt"
 
     @WorkerThread
     override fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): AnalysisResult? {
@@ -219,7 +223,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
         const val INTENT_INFO_VIEW_TYPE = "INTENT_INFO_VIEW_TYPE"
         private const val INPUT_TENSOR_WIDTH = 224
         private const val INPUT_TENSOR_HEIGHT = 224
-        private const val TOP_K = 3
+        private const val TOP_K = 5
         private const val MOVING_AVG_PERIOD = 10
         private const val FORMAT_MS = "%dms"
         private const val FORMAT_AVG_MS = "avg:%.0fms"
