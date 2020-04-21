@@ -96,6 +96,8 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         }
         predictions = result
 
+        game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+
         for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
             Log.d("TEST", prediction)
         }
@@ -109,6 +111,7 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         if(game.finished) {
             game.reset()
         }
+        game.performanceScore = 0
         questionCountDown.cancel()
         questionCountDown.start()
         updateUI()
@@ -167,7 +170,7 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
 
     protected val moduleAssetName: String
         protected get() = "android_model_2_softmax.pt"
-
+        //protected get() = "2020-04-21model.pt"
     @WorkerThread
     override fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): AnalysisResult? {
         return if (mAnalyzeImageErrorState) {
@@ -252,7 +255,7 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         const val INTENT_INFO_VIEW_TYPE = "INTENT_INFO_VIEW_TYPE"
         private const val INPUT_TENSOR_WIDTH = 224
         private const val INPUT_TENSOR_HEIGHT = 224
-        private const val TOP_K = 3
+        private const val TOP_K = 5
         private const val MOVING_AVG_PERIOD = 10
         private const val FORMAT_MS = "%dms"
         private const val FORMAT_AVG_MS = "avg:%.0fms"

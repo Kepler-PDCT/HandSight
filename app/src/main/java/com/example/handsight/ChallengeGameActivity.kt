@@ -108,18 +108,21 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
             }
             Log.d("TEST2", predictions.topNClassNames[i].toString())
         }
+        game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
         if(game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
             correctAnswerCountdown.start()
             answerCurrentlyCorrect = true
         }else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
             correctAnswerCountdownText.text = ""
             correctAnswerCountdown.cancel()
+            answerCurrentlyCorrect = false
         }
 
     }
 
     private fun finishQuestion () {
         game.advanceGame()
+        game.performanceScore = 0
         if(game.finished) {
             game.reset()
         }
@@ -131,6 +134,7 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
 
     protected val moduleAssetName: String
         protected get() = "android_model_2_softmax.pt"
+        //protected get() = "2020-04-21model.pt"
 
     @WorkerThread
     override fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): AnalysisResult? {
@@ -216,7 +220,7 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
         const val INTENT_INFO_VIEW_TYPE = "INTENT_INFO_VIEW_TYPE"
         private const val INPUT_TENSOR_WIDTH = 224
         private const val INPUT_TENSOR_HEIGHT = 224
-        private const val TOP_K = 3
+        private const val TOP_K = 5
         private const val MOVING_AVG_PERIOD = 10
         private const val FORMAT_MS = "%dms"
         private const val FORMAT_AVG_MS = "avg:%.0fms"
