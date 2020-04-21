@@ -1,9 +1,6 @@
 package com.example.handsight
 
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.SystemClock
+import android.os.*
 import android.util.Log
 import android.view.TextureView
 import android.view.View
@@ -41,11 +38,19 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
     private var questionStartTime : Long? = null
     private var correctAnswerCountdown = object : CountDownTimer(2000,100) {
         override fun onTick(millisUntilFinished: Long) {
-            correctAnswerCountdownText.text = (millisUntilFinished/(1000f)+1).toString()
+            correctAnswerCountdownText.text = (millisUntilFinished/1000f + 1).toInt().toString()
         }
         override fun onFinish() {
-            game.makeGuess(predictions.topNClassNames[0]!!.single())
-            finishQuestion()
+            correctAnswerCountdownText.text = "0"
+            Handler().postDelayed(
+                {
+                    correctAnswerCountdownText.text = ""
+                    game.makeGuess(predictions.topNClassNames[0]!!.single())
+                    answerCurrentlyCorrect = false
+                    finishQuestion()
+                },
+                1000
+            )
         }
     }
     private var questionCountDown = object : CountDownTimer(20000,100) {
@@ -76,8 +81,11 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
+        correctAnswerCountdownText.text = ""
         questionCountdownText = findViewById(R.id.questionCountdown)
         perfText = findViewById(R.id.PerfText)
+        perfText.text = ""
+
         updateUI()
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
@@ -105,6 +113,9 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
                 if(bestGuessSoFar > i) {
                     bestGuessSoFar = i
                 }
+            }
+            else {
+                perfText.text = ""
             }
             Log.d("TEST2", predictions.topNClassNames[i].toString())
         }

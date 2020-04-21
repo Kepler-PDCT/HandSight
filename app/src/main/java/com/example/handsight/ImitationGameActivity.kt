@@ -1,9 +1,6 @@
 package com.example.handsight
 
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.SystemClock
+import android.os.*
 import android.util.Log
 import android.view.TextureView
 import android.view.View
@@ -22,6 +19,7 @@ import org.pytorch.torchvision.TensorImageUtils
 import java.io.File
 import java.nio.FloatBuffer
 import java.util.*
+import kotlin.math.roundToInt
 
 class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     class AnalysisResult(
@@ -40,11 +38,21 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     private var questionStartTime : Long? = null
     private var correctAnswerCountdown = object : CountDownTimer(2000,100) {
         override fun onTick(millisUntilFinished: Long) {
-            correctAnswerCountdownText.text = (millisUntilFinished/(1000f)+1).toString()
+//            correctAnswerCountdownText.text = "%.2f".format(millisUntilFinished.toFloat()/1000)
+            correctAnswerCountdownText.text = (millisUntilFinished/1000f + 1).toInt().toString()
         }
         override fun onFinish() {
-            game.makeGuess(predictions.topNClassNames[0]!!.single())
-            finishQuestion()
+            Log.d("aaa", predictions.topNClassNames[0]!!.single().toString())
+            correctAnswerCountdownText.text = "0"
+            Handler().postDelayed(
+                {
+                    correctAnswerCountdownText.text = ""
+                    game.makeGuess(predictions.topNClassNames[0]!!.single())
+                    answerCurrentlyCorrect = false
+                    finishQuestion()
+                },
+                1000
+            )
         }
     }
     private var questionCountDown = object : CountDownTimer(20000,100) {
@@ -75,8 +83,10 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
+        correctAnswerCountdownText.text = ""
         questionCountdownText = findViewById(R.id.questionCountdown)
         perfText = findViewById(R.id.PerfText)
+        perfText.text = ""
 
         updateUI()
         questionStartTime = System.currentTimeMillis()
@@ -112,6 +122,9 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
                     bestGuessSoFar = i
                 }
                 Log.d("size", predictions.topNClassNames.size.toString())
+            }
+            else {
+                perfText.text = ""
             }
         }
         if(game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
