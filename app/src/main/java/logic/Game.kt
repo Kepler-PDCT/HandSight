@@ -1,5 +1,8 @@
 package logic
 
+import android.util.Log
+import kotlin.math.roundToInt
+
 class Question<T>(answer: T, alternatives: List<T>?) {
     val correctAnswer = answer
     val alternatives = alternatives
@@ -125,12 +128,28 @@ abstract class Game<T> (numberOfQuestions : Int) {
     var finished = false
         private set
 
+    var performanceScore = 0
+
     private val questions: List<Question<T>> = (0..numberOfQuestions-1).map { nextQuestion() }
 
     fun getQuestion(): Question<T> {
         return questions[count - 1]
     }
 
+    fun updatePerformanceScore(topKPredictions: Array<String?>, topKScores: FloatArray){
+        val pos = topKPredictions.indexOf(getQuestion().correctAnswer.toString())
+        if (pos == -1){
+            performanceScore = 0
+        }
+        else{
+            var confBonus = topKScores[pos].roundToInt() * 2
+            if (confBonus > 20){
+                confBonus = 20
+            }
+            performanceScore = 100 - (pos+1)*20 + confBonus
+        }
+        Log.d("perf", performanceScore.toString())
+    }
 
     abstract protected fun nextQuestion(): Question<T>
 
