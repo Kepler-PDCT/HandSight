@@ -1,18 +1,18 @@
 package logic
 
-class WordGame : Game<List<Char>>(3) {
+class WordGame : Game<String>(3) {
 
 
-    override fun nextQuestion(): Question<List<Char>> {
+    override fun nextQuestion(): Question<String> {
         wordPosition = 0
 
         val x = timerLength + elapsedTime
 
         val randomWord = WORDS.random().toUpperCase()
-        return Question(randomWord.toList(), null)
+        return Question(randomWord, null)
     }
 
-    override fun makeGuess(guess: List<Char>): Boolean {
+    override fun makeGuess(guess: String): Boolean {
         return true
     }
 
@@ -31,9 +31,9 @@ class WordGame : Game<List<Char>>(3) {
 
     fun advanceWord () {
         wordPosition++
-            if (wordPosition == getQuestion().correctAnswer.count()) {
-                advanceGame()
-            }
+        if (wordPosition == getQuestion().correctAnswer.count()) {
+            advanceGame()
+        }
     }
 
     fun advanceGame() {

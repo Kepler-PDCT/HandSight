@@ -36,4 +36,27 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="card_current">
+        <item name="android:backgroundTint">#D5D5D5</item>
+    </style>
+    <style name="card_text_current">
+        <item name="android:textColor">#777</item>
+    </style>
+
+
+    <style name="card_upcoming">
+        <item name="android:backgroundTint">#EEE</item>
+    </style>
+    <style name="card_text_upcoming">
+        <item name="android:textColor">#BBB</item>
+    </style>
+
+
+    <style name="card_done">
+        <item name="android:backgroundTint">#84D86D</item>
+    </style>
+    <style name="card_text_done">
+        <item name="android:textColor">#3CA33E</item>
+    </style>
+
 </resources>
