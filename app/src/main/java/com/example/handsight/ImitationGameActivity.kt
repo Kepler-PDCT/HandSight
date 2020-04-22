@@ -61,6 +61,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
         }
         override fun onFinish() {
             game.setScoreAccordingToPosition(bestGuessSoFar)
+            game.advanceGame()
             finishQuestion()
         }
     }
@@ -139,7 +140,6 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     }
 
     private fun finishQuestion () {
-        game.advanceGame()
         game.performanceScore = 0
         if(game.finished) {
             game.reset()

@@ -59,6 +59,7 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
         }
         override fun onFinish() {
             game.setScoreAccordingToPosition(bestGuessSoFar)
+            game.advanceGame()
             finishQuestion()
         }
     }
@@ -132,7 +133,6 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
     }
 
     private fun finishQuestion () {
-        game.advanceGame()
         game.performanceScore = 0
         if(game.finished) {
             game.reset()

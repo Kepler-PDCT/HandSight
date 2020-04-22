@@ -33,6 +33,7 @@ class ImitationChallengeGame : Game<Char>(10) {
         if (isCorrect) {
             updateScore(5)
         }
+        updateCounter()
         return isCorrect
     }
 }
