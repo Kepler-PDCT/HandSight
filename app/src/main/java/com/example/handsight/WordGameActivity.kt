@@ -1,10 +1,7 @@
 package com.example.handsight
 
 import android.content.Context
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.SystemClock
+import android.os.*
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
@@ -103,18 +100,28 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         }
 
         if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
+            game.advanceWord()
             updateLetter()
         }
     }
 
     private fun updateLetter () {
-        if(game.finished) {
-            game.reset()
-        }
-        game.performanceScore = 0
+        var delayTime: Long = 0
         questionCountDown.cancel()
-        questionCountDown.start()
-        updateUI()
+        if(game.wordPosition == game.getQuestion().correctAnswer.length) {
+            findViewById<TextView>(R.id.questionCountdown).text = "0"
+            updateUI()
+            game.advanceGame()
+            if(game.finished) {
+                game.reset()
+            }
+            delayTime = 2000
+        }
+        Handler().postDelayed({
+            game.performanceScore = 0
+            questionCountDown.start()
+            updateUI()
+        }, delayTime)
     }
 
     private fun updateUI() {
@@ -165,7 +172,7 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         }
 
         findViewById<TextView>(R.id.scoreTextView).text = "Score: ${game.score}"
-        findViewById<TextView>(R.id.questionTextView).text = "Question: ${game.count} of ${game.numberOfQuestions}"
+        findViewById<TextView>(R.id.questionTextView).text = "Question ${game.count} of ${game.numberOfQuestions}"
     }
 
     protected val moduleAssetName: String

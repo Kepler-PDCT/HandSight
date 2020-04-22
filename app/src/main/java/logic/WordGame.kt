@@ -19,11 +19,7 @@ class WordGame : Game<String>(3) {
     fun checkPredictions (predictions:List<Char>) : Boolean {
         if(getQuestion().correctAnswer[wordPosition] in predictions.subList(0,2)) {
             //In top 2
-            wordPosition++
             updateScore((timerLength- elapsedTime).toInt()/1000 + 5)
-            if (wordPosition == getQuestion().correctAnswer.count()) {
-                advanceGame()
-            }
             return true
         }
         return false
@@ -31,9 +27,6 @@ class WordGame : Game<String>(3) {
 
     fun advanceWord () {
         wordPosition++
-        if (wordPosition == getQuestion().correctAnswer.count()) {
-            advanceGame()
-        }
     }
 
     fun advanceGame() {
