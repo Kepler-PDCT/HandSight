@@ -1,5 +1,7 @@
 package logic
 
+import com.example.handsight.Constants
+
 class WordGame : Game<String>(3) {
 
 
@@ -8,7 +10,7 @@ class WordGame : Game<String>(3) {
 
         val x = timerLength + elapsedTime
 
-        val randomWord = WORDS.random().toUpperCase()
+        val randomWord = Constants.WORDS.random().toUpperCase()
         return Question(randomWord, null)
     }
 

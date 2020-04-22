@@ -10,9 +10,6 @@ class Question<T>(answer: T, alternatives: List<T>?) {
 }
 
 abstract class Game<T> (numberOfQuestions : Int) {
-
-
-    var WORDS : Array<String> = Constants.WORDS
     var wordPosition : Int = 0
     var timerLength : Long = 20000
     var elapsedTime : Long  = 0
