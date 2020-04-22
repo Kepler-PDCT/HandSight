@@ -36,7 +36,8 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
     private var mInputTensor: Tensor? = null
     private var mMovingAvgSum: Long = 0
     private var questionStartTime : Long? = null
-    private var correctAnswerCountdown = object : CountDownTimer(2000,100) {
+    private val game = ImitationChallengeGame()
+    private var correctAnswerCountdown = object : CountDownTimer(game.timerLength,100) {
         override fun onTick(millisUntilFinished: Long) {
             correctAnswerCountdownText.text = (millisUntilFinished/1000f + 1).toInt().toString()
         }
@@ -71,8 +72,6 @@ class ChallengeGameActivity  :  AbstractCameraXActivity<ChallengeGameActivity.An
     lateinit var questionCountdownText : TextView
     override val contentViewLayoutId: Int
         get() = R.layout.activity_challenge_mode
-
-    private val game = ImitationChallengeGame()
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
