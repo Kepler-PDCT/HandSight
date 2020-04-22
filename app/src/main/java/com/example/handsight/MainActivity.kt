@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    fun clicked(view: View) {
+    fun launchLearningMode(view: View) {
         val myIntent = Intent(this,  GuessingGameActivity::class.java)
         startActivity(myIntent)
     }

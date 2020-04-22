@@ -1,24 +1,26 @@
 package com.example.handsight
 
+import android.content.Context
 import android.os.*
 import android.util.Log
-import android.view.TextureView
-import android.view.View
-import android.view.ViewStub
+import android.view.*
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
-import logic.ImitationChallengeGame
+import androidx.cardview.widget.CardView
+import androidx.core.view.children
+import com.airbnb.paris.Paris
 import logic.WordGame
 import org.pytorch.IValue
 import org.pytorch.Module
 import org.pytorch.Tensor
 import org.pytorch.torchvision.TensorImageUtils
 import java.io.File
-import java.lang.Math.abs
 import java.nio.FloatBuffer
 import java.util.*
+
 
 class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult?>() {
 
@@ -43,8 +45,11 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
     lateinit var correctAnswerCountdownText : TextView
     lateinit var perfText: TextView
     lateinit var questionCountdownText : TextView
+    lateinit var wordContainer : LinearLayout
     override val contentViewLayoutId: Int
         get() = R.layout.activity_word_game
+    lateinit var inflater: LayoutInflater
+    lateinit var letterCards : List<View>
 
     private val game = WordGame()
 
@@ -67,14 +72,14 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        wordContainer = findViewById(R.id.wordContainer)
         questionCountdownText = findViewById(R.id.questionCountdown)
-        perfText = findViewById(R.id.PerfText)
+//        perfText = findViewById(R.id.PerfText)
+        inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
-        findViewById<TextView>(R.id.wordText).setText(game.getQuestion().correctAnswer.toString())
-        findViewById<TextView>(R.id.currentLetterText).setText(game.getQuestion().correctAnswer[game.wordPosition].toString())
+        updateUI()
 
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
     }
@@ -95,20 +100,79 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
         }
 
         if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
+            game.advanceWord()
             updateLetter()
         }
     }
 
     private fun updateLetter () {
-        if(game.finished) {
-            game.reset()
-        }
-        game.performanceScore = 0
+        var delayTime: Long = 0
         questionCountDown.cancel()
-        questionCountDown.start()
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
-        findViewById<TextView>(R.id.wordText).setText(game.getQuestion().correctAnswer.toString())
-        findViewById<TextView>(R.id.currentLetterText).setText(game.getQuestion().correctAnswer[game.wordPosition].toString())
+        if(game.wordPosition == game.getQuestion().correctAnswer.length) {
+            findViewById<TextView>(R.id.questionCountdown).text = "0"
+            updateUI()
+            game.advanceGame()
+            if(game.finished) {
+                game.reset()
+            }
+            delayTime = 2000
+        }
+        Handler().postDelayed({
+            game.performanceScore = 0
+            questionCountDown.start()
+            updateUI()
+        }, delayTime)
+    }
+
+    private fun updateUI() {
+        val word = game.getQuestion().correctAnswer
+
+        // Set the letters
+        if(game.wordPosition == 0) {
+            wordContainer.removeAllViews()
+            for (i in word.indices) {
+                inflater.inflate(
+                    R.layout.module_letter_card,
+                    wordContainer as ViewGroup
+                )
+                var cardView = wordContainer.children.last()
+                var textView = cardView.findViewById<TextView>(R.id.letterCardText)
+                textView.text = word[i].toString()
+            }
+            letterCards = wordContainer.children.toList()
+        }
+
+        // Update letter styles
+        for(i in word.indices) {
+            var constraintView = letterCards[i]
+            var cardView = constraintView.findViewById<CardView>(R.id.letterCard)
+            val letterText = cardView.findViewById<TextView>(R.id.letterCardText)
+            var constParams = constraintView.layoutParams as LinearLayout.LayoutParams
+
+            if (i < game.wordPosition) {
+                constParams.weight = 1.0f
+                Paris.style(cardView).apply(R.style.card_done)
+                Paris.style(letterText).apply(R.style.card_text_done)
+            }
+            else if (i == game.wordPosition) {
+                constParams.weight = 1.5f
+                Paris.style(cardView).apply(R.style.card_current)
+                Paris.style(letterText).apply(R.style.card_text_current)
+            }
+            else if (i > game.wordPosition) {
+                constParams.weight = 1.0f
+                Paris.style(cardView).apply(R.style.card_upcoming)
+                Paris.style(letterText).apply(R.style.card_text_upcoming)
+            }
+            // Make sure auto text size is enabled
+            // Paris seem to do mess with it otherwise
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                letterText.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
+            }
+        }
+
+        findViewById<TextView>(R.id.scoreTextView).text = "Score: ${game.score}"
+        findViewById<TextView>(R.id.questionTextView).text = "Question ${game.count} of ${game.numberOfQuestions}"
     }
 
     protected val moduleAssetName: String

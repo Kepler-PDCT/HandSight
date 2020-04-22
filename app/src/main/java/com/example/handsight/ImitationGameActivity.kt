@@ -1,9 +1,6 @@
 package com.example.handsight
 
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.SystemClock
+import android.os.*
 import android.util.Log
 import android.view.TextureView
 import android.view.View
@@ -22,6 +19,7 @@ import org.pytorch.torchvision.TensorImageUtils
 import java.io.File
 import java.nio.FloatBuffer
 import java.util.*
+import kotlin.math.roundToInt
 
 class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     class AnalysisResult(
@@ -38,21 +36,33 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     private var mInputTensor: Tensor? = null
     private var mMovingAvgSum: Long = 0
     private var questionStartTime : Long? = null
-    private var correctAnswerCountdown = object : CountDownTimer(2000,100) {
+    private val game = ImitationChallengeGame()
+    private var correctAnswerCountdown = object : CountDownTimer(game.timerLength,100) {
         override fun onTick(millisUntilFinished: Long) {
-            correctAnswerCountdownText.text = (millisUntilFinished/(1000f)+1).toString()
+//            correctAnswerCountdownText.text = "%.2f".format(millisUntilFinished.toFloat()/1000)
+            correctAnswerCountdownText.text = (millisUntilFinished/1000f + 1).toInt().toString()
         }
         override fun onFinish() {
-            game.makeGuess(predictions.topNClassNames[0]!!.single())
-            finishQuestion()
+            Log.d("aaa", predictions.topNClassNames[0]!!.single().toString())
+            correctAnswerCountdownText.text = "0"
+            Handler().postDelayed(
+                {
+                    correctAnswerCountdownText.text = ""
+                    game.makeGuess(predictions.topNClassNames[0]!!.single())
+                    answerCurrentlyCorrect = false
+                    finishQuestion()
+                },
+                1000
+            )
         }
     }
-    private var questionCountDown = object : CountDownTimer(20000,100) {
+    private var questionCountDown = object : CountDownTimer(game.timerLength,100) {
         override fun onTick(millisUntilFinished: Long) {
             questionCountdownText.text = (millisUntilFinished/(1000)+1).toString()
         }
         override fun onFinish() {
             game.setScoreAccordingToPosition(bestGuessSoFar)
+            game.advanceGame()
             finishQuestion()
         }
     }
@@ -63,9 +73,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     lateinit var perfText: TextView
     lateinit var questionCountdownText : TextView
     override val contentViewLayoutId: Int
-        get() = R.layout.activity_image_classification
-
-    private val game = ImitationChallengeGame()
+        get() = R.layout.activity_imitation_mode
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
@@ -75,16 +83,26 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
+        correctAnswerCountdownText.text = ""
         questionCountdownText = findViewById(R.id.questionCountdown)
         perfText = findViewById(R.id.PerfText)
-        Log.d("TEST", game.getQuestion().correctAnswer.toString())
-        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
+        perfText.text = ""
+
+        updateUI()
+        questionStartTime = System.currentTimeMillis()
+        questionCountDown.start()
+    }
+
+    private fun updateUI() {
+        val correctLetter = game.getQuestion().correctAnswer.toString()
+        val uri = "@drawable/" + correctLetter.toLowerCase()
         val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
         val res = resources.getDrawable(imageResource)
         findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
-        questionStartTime = System.currentTimeMillis()
-        questionCountDown.start()
+        findViewById<TextView>(R.id.CorrectLetterTextView).setText(correctLetter)
+
+        findViewById<TextView>(R.id.questionTextView)!!.setText("Question ${game.count} of ${game.numberOfQuestions}")
+        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score}")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -105,6 +123,9 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
                 }
                 Log.d("size", predictions.topNClassNames.size.toString())
             }
+            else {
+                perfText.text = ""
+            }
         }
         if(game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
             correctAnswerCountdown.start()
@@ -118,7 +139,6 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     }
 
     private fun finishQuestion () {
-        game.advanceGame()
         game.performanceScore = 0
         if(game.finished) {
             game.reset()
@@ -126,13 +146,8 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
 
         bestGuessSoFar = 99
         questionCountDown.start()
-        findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score} \nQuestion: ${game.count} out of ${game.numberOfQuestions}")
+        updateUI()
         Log.d("TEST", game.score.toString())
-        val uri = "@drawable/" + game.getQuestion().correctAnswer.toString().toLowerCase()
-        val imageResource = resources.getIdentifier(uri, null, packageName) //get image  resource
-        val res = resources.getDrawable(imageResource)
-        findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
-
     }
 
     protected val moduleAssetName: String

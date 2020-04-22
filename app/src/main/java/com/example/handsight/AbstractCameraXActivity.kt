@@ -1,18 +1,26 @@
 package com.example.handsight
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.AttributeSet
 import android.util.Size
 import android.view.TextureView
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.camera.core.*
 import androidx.camera.core.Preview.OnPreviewOutputUpdateListener
 import androidx.camera.core.Preview.PreviewOutput
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
+import androidx.core.view.doOnLayout
+
 
 abstract class AbstractCameraXActivity<R> : BaseModuleActivity() {
     private var mLastAnalysisResultTime: Long = 0
@@ -62,6 +70,16 @@ abstract class AbstractCameraXActivity<R> : BaseModuleActivity() {
         preview.onPreviewOutputUpdateListener =
             OnPreviewOutputUpdateListener { output: PreviewOutput ->
                 textureView.surfaceTexture = output.surfaceTexture
+                val parent = textureView.parent as FrameLayout
+
+                // Set correct aspect ratio on camera
+                (parent.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "H,${output.textureSize.height}:${output.textureSize.width}"
+
+                // When layout is set, center camera in view
+                parent.doOnLayout {
+                    val overlap = (it.parent as ConstraintLayout).height - it.height
+                    it.translationY = (overlap/2).toFloat()
+                }
             }
         val imageAnalysisConfig = ImageAnalysisConfig.Builder()
             .setTargetResolution(Size(224, 224))
