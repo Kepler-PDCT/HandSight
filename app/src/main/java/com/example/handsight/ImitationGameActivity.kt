@@ -37,7 +37,7 @@ class ImitationGameActivity :  AbstractCameraXActivity<AnalysisResult?>() {
     private var mMovingAvgSum: Long = 0
     private var questionStartTime : Long? = null
     private val game = ImitationChallengeGame()
-    private var correctAnswerCountdown = object : CountDownTimer(game.timerLength,100) {
+    private var correctAnswerCountdown = object : CountDownTimer(2000,100) {
         override fun onTick(millisUntilFinished: Long) {
 //            correctAnswerCountdownText.text = "%.2f".format(millisUntilFinished.toFloat()/1000)
             correctAnswerCountdownText.text = (millisUntilFinished/1000f + 1).toInt().toString()
