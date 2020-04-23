@@ -11,17 +11,26 @@ import androidx.annotation.RequiresApi
 import logic.ImitationChallengeGame
 import java.util.*
 
-class ImitationGameActivity :  AbstractCameraXActivity() {
+class ImitationGameActivity : AbstractCameraXActivity() {
 
     private lateinit var predictions: AnalysisResult
     private var mMovingAvgSum: Long = 0
-    private var questionStartTime : Long? = null
+    private var questionStartTime: Long? = null
     private val game = ImitationChallengeGame()
-    private var correctAnswerCountdown = object : CountDownTimer(2000,100) {
+    private var bestGuessSoFar = 99
+    private val mMovingAvgQueue: Queue<Long> = LinkedList()
+    private var answerCurrentlyCorrect: Boolean = false
+    lateinit var correctAnswerCountdownText: TextView
+    lateinit var perfText: TextView
+    lateinit var questionCountdownText: TextView
+    override val contentViewLayoutId: Int
+        get() = R.layout.activity_imitation_mode
+
+    private var correctAnswerCountdown = object : CountDownTimer(2000, 100) {
         override fun onTick(millisUntilFinished: Long) {
-//            correctAnswerCountdownText.text = "%.2f".format(millisUntilFinished.toFloat()/1000)
-            correctAnswerCountdownText.text = (millisUntilFinished/1000f + 1).toInt().toString()
+            correctAnswerCountdownText.text = (millisUntilFinished / 1000f + 1).toInt().toString()
         }
+
         override fun onFinish() {
             Log.d("aaa", predictions.topNClassNames[0]!!.single().toString())
             correctAnswerCountdownText.text = "0"
@@ -36,24 +45,18 @@ class ImitationGameActivity :  AbstractCameraXActivity() {
             )
         }
     }
-    private var questionCountDown = object : CountDownTimer(game.timerLength,100) {
+
+    private var questionCountDown = object : CountDownTimer(game.timerLength, 100) {
         override fun onTick(millisUntilFinished: Long) {
-            questionCountdownText.text = (millisUntilFinished/(1000)+1).toString()
+            questionCountdownText.text = (millisUntilFinished / (1000) + 1).toString()
         }
+
         override fun onFinish() {
             game.setScoreAccordingToPosition(bestGuessSoFar)
             game.advanceGame()
             finishQuestion()
         }
     }
-    private var bestGuessSoFar = 99
-    private val mMovingAvgQueue: Queue<Long> = LinkedList()
-    private var answerCurrentlyCorrect : Boolean = false
-    lateinit var correctAnswerCountdownText : TextView
-    lateinit var perfText: TextView
-    lateinit var questionCountdownText : TextView
-    override val contentViewLayoutId: Int
-        get() = R.layout.activity_imitation_mode
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
@@ -96,21 +99,20 @@ class ImitationGameActivity :  AbstractCameraXActivity() {
         Log.d("TEST", result.topNClassNames[0].toString())
         Log.d("TEST", result.topNScores[0].toString())
         for (i in 0 until predictions.topNClassNames.size) {
-            if(game.isCorrect(predictions.topNClassNames[i]!!.single())) {
+            if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
                 perfText.text = predictions.topNScores[i].toString()
-                if(bestGuessSoFar > i) {
+                if (bestGuessSoFar > i) {
                     bestGuessSoFar = i
                 }
                 Log.d("size", predictions.topNClassNames.size.toString())
-            }
-            else {
+            } else {
                 perfText.text = ""
             }
         }
-        if(game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
+        if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
             correctAnswerCountdown.start()
             answerCurrentlyCorrect = true
-        }else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
+        } else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
             correctAnswerCountdownText.text = ""
             correctAnswerCountdown.cancel()
             answerCurrentlyCorrect = false
@@ -118,9 +120,9 @@ class ImitationGameActivity :  AbstractCameraXActivity() {
         game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
     }
 
-    private fun finishQuestion () {
+    private fun finishQuestion() {
         game.performanceScore = 0
-        if(game.finished) {
+        if (game.finished) {
             game.reset()
         }
 
@@ -129,6 +131,5 @@ class ImitationGameActivity :  AbstractCameraXActivity() {
         updateUI()
         Log.d("TEST", game.score.toString())
     }
-
 
 }

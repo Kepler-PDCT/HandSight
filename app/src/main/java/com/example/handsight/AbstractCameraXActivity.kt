@@ -1,15 +1,12 @@
 package com.example.handsight
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.AttributeSet
 import android.util.Log
 import android.util.Size
 import android.view.TextureView
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.UiThread
@@ -18,7 +15,6 @@ import androidx.camera.core.*
 import androidx.camera.core.Preview.OnPreviewOutputUpdateListener
 import androidx.camera.core.Preview.PreviewOutput
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.view.doOnLayout
 import org.pytorch.IValue
@@ -30,12 +26,25 @@ import java.nio.FloatBuffer
 
 
 abstract class AbstractCameraXActivity : BaseModuleActivity() {
+
+    class AnalysisResult(
+        val topNClassNames: Array<String?>,
+        val topNScores: FloatArray,
+        val moduleForwardDuration: Long
+    )
+
     private var mLastAnalysisResultTime: Long = 0
     protected abstract val contentViewLayoutId: Int
     protected abstract val cameraPreviewTextureView: TextureView
+    private var mAnalyzeImageErrorState = false
+    private var mInputTensorBuffer: FloatBuffer? = null
+    private var mInputTensor: Tensor? = null
+    private var mModule: Module? = null
+    protected val moduleAssetName: String
+        protected get() = "model.pt"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //StatusBarUtils.setStatusBarOverlay(getWindow(), true);
         setContentView(contentViewLayoutId)
         startBackgroundThread()
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -51,41 +60,11 @@ abstract class AbstractCameraXActivity : BaseModuleActivity() {
         }
     }
 
-    class AnalysisResult(
-        val topNClassNames: Array<String?>,
-        val topNScores: FloatArray,
-        val moduleForwardDuration: Long,
-        val analysisDuration: Long
-    )
-
-    private var mAnalyzeImageErrorState = false
-    private var mInputTensorBuffer: FloatBuffer? = null
-    private var mInputTensor: Tensor? = null
-    private var mModule: Module? = null
-    protected val moduleAssetName: String
-        protected get() = "model.pt"
-
     override fun onDestroy() {
         super.onDestroy()
         if (mModule != null) {
             mModule!!.destroy()
         }
-    }
-
-    companion object {
-        const val INTENT_MODULE_ASSET_NAME = "INTENT_MODULE_ASSET_NAME"
-        const val INTENT_INFO_VIEW_TYPE = "INTENT_INFO_VIEW_TYPE"
-        const val INPUT_TENSOR_WIDTH = 224
-        const val INPUT_TENSOR_HEIGHT = 224
-        const val TOP_K = 5
-        const val MOVING_AVG_PERIOD = 10
-        const val FORMAT_MS = "%dms"
-        const val FORMAT_AVG_MS = "avg:%.0fms"
-        const val FORMAT_FPS = "%.1fFPS"
-        const val SCORES_FORMAT = "%.2f"
-        const val REQUEST_CODE_CAMERA_PERMISSION = 200
-        val PERMISSIONS =
-            arrayOf(Manifest.permission.CAMERA)
     }
 
     @WorkerThread
@@ -137,12 +116,10 @@ abstract class AbstractCameraXActivity : BaseModuleActivity() {
                 topKClassNames[i] = Constants.IMAGENET_CLASSES[ix]
                 topKScores[i] = scores[ix]
             }
-            val analysisDuration = SystemClock.elapsedRealtime() - startTime
             AnalysisResult(
                 topKClassNames,
                 topKScores,
-                moduleForwardDuration,
-                analysisDuration
+                moduleForwardDuration
             )
         } catch (e: Exception) {
             Log.e(
@@ -189,12 +166,13 @@ abstract class AbstractCameraXActivity : BaseModuleActivity() {
                 val parent = textureView.parent as FrameLayout
 
                 // Set correct aspect ratio on camera
-                (parent.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "H,${output.textureSize.height}:${output.textureSize.width}"
+                (parent.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio =
+                    "H,${output.textureSize.height}:${output.textureSize.width}"
 
                 // When layout is set, center camera in view
                 parent.doOnLayout {
                     val overlap = (it.parent as ConstraintLayout).height - it.height
-                    it.translationY = (overlap/2).toFloat()
+                    it.translationY = (overlap / 2).toFloat()
                 }
             }
         val imageAnalysisConfig = ImageAnalysisConfig.Builder()
@@ -221,5 +199,14 @@ abstract class AbstractCameraXActivity : BaseModuleActivity() {
     @UiThread
     protected abstract fun applyToUiAnalyzeImageResult(result: AnalysisResult?)
 
+    companion object {
+        const val INPUT_TENSOR_WIDTH = 224
+        const val INPUT_TENSOR_HEIGHT = 224
+        const val TOP_K = 5
+        const val MOVING_AVG_PERIOD = 10
+        const val REQUEST_CODE_CAMERA_PERMISSION = 200
+        val PERMISSIONS =
+            arrayOf(Manifest.permission.CAMERA)
+    }
 
 }

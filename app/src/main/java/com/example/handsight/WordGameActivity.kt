@@ -11,9 +11,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.children
 import com.airbnb.paris.Paris
 import logic.WordGame
-import org.pytorch.Module
-import org.pytorch.Tensor
-import java.nio.FloatBuffer
 import java.util.*
 
 
@@ -21,28 +18,27 @@ class WordGameActivity : AbstractCameraXActivity() {
 
     private lateinit var predictions: AnalysisResult
     private var mMovingAvgSum: Long = 0
-    private var questionStartTime : Long? = null
+    private var questionStartTime: Long? = null
     private val mMovingAvgQueue: Queue<Long> = LinkedList()
-    lateinit var questionCountdownText : TextView
-    lateinit var wordContainer : LinearLayout
+    lateinit var questionCountdownText: TextView
+    lateinit var wordContainer: LinearLayout
     override val contentViewLayoutId: Int
         get() = R.layout.activity_word_game
     lateinit var inflater: LayoutInflater
-    lateinit var letterCards : List<View>
-
+    lateinit var letterCards: List<View>
     private val game = WordGame()
 
-    private var questionCountDown = object : CountDownTimer(game.timerLength.toLong(),100) {
+    private var questionCountDown = object : CountDownTimer(game.timerLength, 100) {
         override fun onTick(millisUntilFinished: Long) {
-            questionCountdownText.text = (millisUntilFinished/(1000)+1).toString()
+            questionCountdownText.text = (millisUntilFinished / (1000) + 1).toString()
             game.elapsedTime = game.timerLength - millisUntilFinished
         }
+
         override fun onFinish() {
             game.advanceWord()
             updateLetter()
         }
     }
-
 
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
@@ -53,7 +49,7 @@ class WordGameActivity : AbstractCameraXActivity() {
         super.onCreate(savedInstanceState)
         wordContainer = findViewById(R.id.wordContainer)
         questionCountdownText = findViewById(R.id.questionCountdown)
-//        perfText = findViewById(R.id.PerfText)
+        // perfText = findViewById(R.id.PerfText)
         inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
@@ -84,14 +80,14 @@ class WordGameActivity : AbstractCameraXActivity() {
         }
     }
 
-    private fun updateLetter () {
+    private fun updateLetter() {
         var delayTime: Long = 0
         questionCountDown.cancel()
-        if(game.wordPosition == game.getQuestion().correctAnswer.length) {
+        if (game.wordPosition == game.getQuestion().correctAnswer.length) {
             findViewById<TextView>(R.id.questionCountdown).text = "0"
             updateUI()
             game.advanceGame()
-            if(game.finished) {
+            if (game.finished) {
                 game.reset()
             }
             delayTime = 2000
@@ -107,7 +103,7 @@ class WordGameActivity : AbstractCameraXActivity() {
         val word = game.getQuestion().correctAnswer
 
         // Set the letters
-        if(game.wordPosition == 0) {
+        if (game.wordPosition == 0) {
             wordContainer.removeAllViews()
             for (i in word.indices) {
                 inflater.inflate(
@@ -122,7 +118,7 @@ class WordGameActivity : AbstractCameraXActivity() {
         }
 
         // Update letter styles
-        for(i in word.indices) {
+        for (i in word.indices) {
             var constraintView = letterCards[i]
             var cardView = constraintView.findViewById<CardView>(R.id.letterCard)
             val letterText = cardView.findViewById<TextView>(R.id.letterCardText)
@@ -132,13 +128,11 @@ class WordGameActivity : AbstractCameraXActivity() {
                 constParams.weight = 1.0f
                 Paris.style(cardView).apply(R.style.card_done)
                 Paris.style(letterText).apply(R.style.card_text_done)
-            }
-            else if (i == game.wordPosition) {
+            } else if (i == game.wordPosition) {
                 constParams.weight = 1.5f
                 Paris.style(cardView).apply(R.style.card_current)
                 Paris.style(letterText).apply(R.style.card_text_current)
-            }
-            else if (i > game.wordPosition) {
+            } else if (i > game.wordPosition) {
                 constParams.weight = 1.0f
                 Paris.style(cardView).apply(R.style.card_upcoming)
                 Paris.style(letterText).apply(R.style.card_text_upcoming)
@@ -151,7 +145,8 @@ class WordGameActivity : AbstractCameraXActivity() {
         }
 
         findViewById<TextView>(R.id.scoreTextView).text = "Score: ${game.score}"
-        findViewById<TextView>(R.id.questionTextView).text = "Question ${game.count} of ${game.numberOfQuestions}"
+        findViewById<TextView>(R.id.questionTextView).text =
+            "Question ${game.count} of ${game.numberOfQuestions}"
     }
 
 }
