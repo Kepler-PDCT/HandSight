@@ -2,7 +2,6 @@ package com.example.handsight
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -34,7 +33,7 @@ class GuessingGameActivity : AppCompatActivity() {
 
     private fun setScore() {
         findViewById<TextView>(R.id.questionTextView).setText(
-            "Question ${game.count} of ${game.numberOfQuestions}"
+            "Question ${game.currentQuestionIndex} of ${game.numberOfQuestions}"
         )
 
         findViewById<TextView>(R.id.scoreTextView).setText(

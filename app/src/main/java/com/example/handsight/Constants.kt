@@ -12,7 +12,6 @@ object Constants {
         "G",
         "H",
         "I",
-        "J",
         "K",
         "L",
         "M",
@@ -28,14 +27,13 @@ object Constants {
         "W",
         "X",
         "Y",
-        "Z"
+        "?"
     )
 
     val WORDS = arrayOf(
         "seven",
         "world",
         "heart",
-        "pizza",
         "water",
         "sixty",
         "board",
@@ -71,7 +69,6 @@ object Constants {
         "South",
         "erica",
         "anime",
-        "Jesus",
         "china",
         "stone",
         "blood",
@@ -107,7 +104,6 @@ object Constants {
         "olive",
         "leave",
         "whale",
-        "James",
         "sally",
         "ology",
         "brave",

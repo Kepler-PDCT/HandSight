@@ -20,7 +20,7 @@ class ImitationChallengeGameUnitTest {
         assertEquals(false, game.finished)
         assertEquals(false, game.finished)
         assertEquals(0, game.score)
-        assertEquals(1, game.count)
+        assertEquals(1, game.currentQuestionIndex)
         assertEquals(10, game.numberOfQuestions)
     }
 
@@ -40,7 +40,7 @@ class ImitationChallengeGameUnitTest {
             if(i < 10) {
                 assertEquals(false, game.finished)
                 assertEquals(5*i, game.score)
-                assertEquals(i+1, game.count)
+                assertEquals(i+1, game.currentQuestionIndex)
             }
         }
 
@@ -55,7 +55,7 @@ class GuessingGameUnitTest {
         val game = GuessingGame()
         assertEquals(false, game.finished)
         assertEquals(0, game.score)
-        assertEquals(1, game.count)
+        assertEquals(1, game.currentQuestionIndex)
         assertEquals(10, game.numberOfQuestions)
     }
 
@@ -89,7 +89,7 @@ class GuessingGameUnitTest {
 
         assertEquals(false, game.finished)
         assertEquals(1, game.score)
-        assertEquals(2, game.count)
+        assertEquals(2, game.currentQuestionIndex)
     }
 
     @Test
@@ -103,6 +103,6 @@ class GuessingGameUnitTest {
 
         assertEquals(true, game.finished)
         assertEquals(10, game.score)
-        assertEquals(11, game.count)
+        assertEquals(11, game.currentQuestionIndex)
     }
 }

@@ -1,10 +1,14 @@
 package logic
 
+import com.example.handsight.Constants
+
 class GuessingGame : Game<Char>(10) {
     override fun nextQuestion(): Question<Char> {
-        var questionArray = (0..3).map { ((0..25).random() + 65).toChar() }.toList()
-        val right = questionArray[(0..3).random()]
-        return Question(right, questionArray)
+        val questionArray =
+            Constants.IMAGENET_CLASSES.slice(0..Constants.IMAGENET_CLASSES.size - 2).toList()
+                .shuffled().take(4).map { it.single() }.toList()
+        val correctAnswer = questionArray[(0..3).random()]
+        return Question(correctAnswer, questionArray)
     }
 
     override fun makeGuess(guess: Char): Boolean {
