@@ -39,13 +39,15 @@ abstract class Game<T> (numberOfQuestions : Int) {
             performanceScore = 0
         }
         else{
-            var confBonus = topKScores[pos].roundToInt() * 2
+            var confBonus = topKScores[pos] * 200
             if (confBonus > 20){
-                confBonus = 20
+                confBonus = 20f
             }
-            performanceScore = 100 - (pos+1)*20 + confBonus
+            performanceScore = (100 - (pos+1)*20 + confBonus).roundToInt()
+            Log.d("perf", topKScores[pos].toString())
         }
         Log.d("perf", performanceScore.toString())
+
     }
 
     abstract protected fun nextQuestion(): Question<T>
