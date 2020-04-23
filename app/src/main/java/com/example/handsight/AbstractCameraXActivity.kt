@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.AttributeSet
+import android.util.Log
 import android.util.Size
 import android.view.TextureView
 import android.view.View
@@ -20,9 +21,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.view.doOnLayout
+import org.pytorch.IValue
+import org.pytorch.Module
+import org.pytorch.Tensor
+import org.pytorch.torchvision.TensorImageUtils
+import java.io.File
+import java.nio.FloatBuffer
 
 
-abstract class AbstractCameraXActivity<R> : BaseModuleActivity() {
+abstract class AbstractCameraXActivity : BaseModuleActivity() {
     private var mLastAnalysisResultTime: Long = 0
     protected abstract val contentViewLayoutId: Int
     protected abstract val cameraPreviewTextureView: TextureView
@@ -41,6 +48,115 @@ abstract class AbstractCameraXActivity<R> : BaseModuleActivity() {
             )
         } else {
             setupCameraX()
+        }
+    }
+
+    class AnalysisResult(
+        val topNClassNames: Array<String?>,
+        val topNScores: FloatArray,
+        val moduleForwardDuration: Long,
+        val analysisDuration: Long
+    )
+
+    private var mAnalyzeImageErrorState = false
+    private var mInputTensorBuffer: FloatBuffer? = null
+    private var mInputTensor: Tensor? = null
+    private var mModule: Module? = null
+    protected val moduleAssetName: String
+        protected get() = "model.pt"
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mModule != null) {
+            mModule!!.destroy()
+        }
+    }
+
+    companion object {
+        const val INTENT_MODULE_ASSET_NAME = "INTENT_MODULE_ASSET_NAME"
+        const val INTENT_INFO_VIEW_TYPE = "INTENT_INFO_VIEW_TYPE"
+        const val INPUT_TENSOR_WIDTH = 224
+        const val INPUT_TENSOR_HEIGHT = 224
+        const val TOP_K = 5
+        const val MOVING_AVG_PERIOD = 10
+        const val FORMAT_MS = "%dms"
+        const val FORMAT_AVG_MS = "avg:%.0fms"
+        const val FORMAT_FPS = "%.1fFPS"
+        const val SCORES_FORMAT = "%.2f"
+        const val REQUEST_CODE_CAMERA_PERMISSION = 200
+        val PERMISSIONS =
+            arrayOf(Manifest.permission.CAMERA)
+    }
+
+    @WorkerThread
+    fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): AnalysisResult? {
+        return if (mAnalyzeImageErrorState) {
+            null
+        } else try {
+            if (mModule == null) {
+                val moduleFileAbsoluteFilePath = File(
+                    Utils.assetFilePath(this, moduleAssetName)
+                ).absolutePath
+                mModule = Module.load(moduleFileAbsoluteFilePath)
+                mInputTensorBuffer =
+                    Tensor.allocateFloatBuffer(3 * INPUT_TENSOR_WIDTH * INPUT_TENSOR_HEIGHT)
+                mInputTensor = Tensor.fromBlob(
+                    mInputTensorBuffer,
+                    longArrayOf(
+                        1,
+                        3,
+                        INPUT_TENSOR_HEIGHT.toLong(),
+                        INPUT_TENSOR_WIDTH.toLong()
+                    )
+                )
+            }
+            val startTime = SystemClock.elapsedRealtime()
+            TensorImageUtils.imageYUV420CenterCropToFloatBuffer(
+                image!!.image,
+                rotationDegrees,
+                INPUT_TENSOR_WIDTH,
+                INPUT_TENSOR_HEIGHT,
+                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB,
+                TensorImageUtils.TORCHVISION_NORM_STD_RGB,
+                mInputTensorBuffer,
+                0
+            )
+            val moduleForwardStartTime = SystemClock.elapsedRealtime()
+            val outputTensor = mModule!!.forward(IValue.from(mInputTensor)).toTensor()
+            val moduleForwardDuration =
+                SystemClock.elapsedRealtime() - moduleForwardStartTime
+            val scores = outputTensor.dataAsFloatArray
+            val ixs =
+                Utils.topK(scores, TOP_K)
+            val topKClassNames =
+                arrayOfNulls<String>(TOP_K)
+            val topKScores =
+                FloatArray(TOP_K)
+            for (i in 0 until TOP_K) {
+                val ix = ixs[i]
+                topKClassNames[i] = Constants.IMAGENET_CLASSES[ix]
+                topKScores[i] = scores[ix]
+            }
+            val analysisDuration = SystemClock.elapsedRealtime() - startTime
+            AnalysisResult(
+                topKClassNames,
+                topKScores,
+                moduleForwardDuration,
+                analysisDuration
+            )
+        } catch (e: Exception) {
+            Log.e(
+                Constants.TAG,
+                "Error during image analysis",
+                e
+            )
+            mAnalyzeImageErrorState = true
+            runOnUiThread {
+                if (!isFinishing) {
+                    Log.d("TEST", "is finishing")
+                }
+            }
+            null
         }
     }
 
@@ -102,15 +218,8 @@ abstract class AbstractCameraXActivity<R> : BaseModuleActivity() {
         CameraX.bindToLifecycle(this, preview, imageAnalysis)
     }
 
-    @WorkerThread
-    protected abstract fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): R?
-
     @UiThread
-    protected abstract fun applyToUiAnalyzeImageResult(result: R)
+    protected abstract fun applyToUiAnalyzeImageResult(result: AnalysisResult?)
 
-    companion object {
-        private const val REQUEST_CODE_CAMERA_PERMISSION = 200
-        private val PERMISSIONS =
-            arrayOf(Manifest.permission.CAMERA)
-    }
+
 }
