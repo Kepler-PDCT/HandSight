@@ -1,7 +1,6 @@
 package logic
 
 import android.util.Log
-import com.example.handsight.Constants
 import kotlin.math.roundToInt
 
 class Question<T>(answer: T, alternatives: List<T>?) {
@@ -11,7 +10,6 @@ class Question<T>(answer: T, alternatives: List<T>?) {
 
 abstract class Game<T> (numberOfQuestions : Int) {
     var wordPosition : Int = 0
-    var timerLength : Long = 20000
     var elapsedTime : Long  = 0
 
     val numberOfQuestions = numberOfQuestions
@@ -19,35 +17,18 @@ abstract class Game<T> (numberOfQuestions : Int) {
     var score = 0
         protected set
 
-    var count = 1
+    var currentQuestionIndex = 1
         private set
 
     var finished = false
         private set
 
-    var performanceScore = 0
+
 
     private val questions: List<Question<T>> = (0..numberOfQuestions-1).map { nextQuestion() }
 
     fun getQuestion(): Question<T> {
-        return questions[count - 1]
-    }
-
-    fun updatePerformanceScore(topKPredictions: Array<String?>, topKScores: FloatArray){
-        val pos = topKPredictions.indexOf(getQuestion().correctAnswer.toString())
-        if (pos == -1){
-            performanceScore = 0
-        }
-        else{
-            var confBonus = topKScores[pos] * 200
-            if (confBonus > 20){
-                confBonus = 20f
-            }
-            performanceScore = (100 - (pos+1)*20 + confBonus).roundToInt()
-            Log.d("perf", topKScores[pos].toString())
-        }
-        Log.d("perf", performanceScore.toString())
-
+        return questions[currentQuestionIndex - 1]
     }
 
     abstract protected fun nextQuestion(): Question<T>
@@ -60,14 +41,14 @@ abstract class Game<T> (numberOfQuestions : Int) {
     }
 
     protected fun updateCounter() {
-        count++;
-        if (count > numberOfQuestions) {
+        currentQuestionIndex++;
+        if (currentQuestionIndex > numberOfQuestions) {
             finished = true
         }
     }
 
     fun reset() {
-        count = 1
+        currentQuestionIndex = 1
         finished = false
         score = 0
     }

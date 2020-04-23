@@ -84,7 +84,7 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         findViewById<ImageView>(R.id.CorrectAnswerImage).setImageDrawable(res)
         findViewById<TextView>(R.id.CorrectLetterTextView).setText(correctLetter)
 
-        findViewById<TextView>(R.id.questionTextView)!!.setText("Question ${game.count} of ${game.numberOfQuestions}")
+        findViewById<TextView>(R.id.questionTextView)!!.setText("Question ${game.currentQuestionIndex} of ${game.numberOfQuestions}")
         findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score}")
     }
 

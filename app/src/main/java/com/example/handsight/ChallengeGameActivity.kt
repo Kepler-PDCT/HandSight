@@ -76,7 +76,7 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
     private fun updateUI() {
         val correctLetter = game.getQuestion().correctAnswer.toString()
         findViewById<TextView>(R.id.CorrectLetterTextView).setText(correctLetter)
-        findViewById<TextView>(R.id.questionTextView)!!.setText("Question ${game.count} of ${game.numberOfQuestions}")
+        findViewById<TextView>(R.id.questionTextView)!!.setText("Question ${game.currentQuestionIndex} of ${game.numberOfQuestions}")
         findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score}")
     }
 

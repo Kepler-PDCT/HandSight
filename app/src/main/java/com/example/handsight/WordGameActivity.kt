@@ -146,7 +146,7 @@ class WordGameActivity : AbstractCameraXActivity() {
 
         findViewById<TextView>(R.id.scoreTextView).text = "Score: ${game.score}"
         findViewById<TextView>(R.id.questionTextView).text =
-            "Question ${game.count} of ${game.numberOfQuestions}"
+            "Question ${game.currentQuestionIndex} of ${game.numberOfQuestions}"
     }
 
 }
