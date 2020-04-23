@@ -176,8 +176,8 @@ class WordGameActivity : AbstractCameraXActivity<WordGameActivity.AnalysisResult
     }
 
     protected val moduleAssetName: String
-        protected get() = "android_model_2_softmax.pt"
-        //protected get() = "2020-04-21model.pt"
+        protected get() = "model.pt"
+
     @WorkerThread
     override fun analyzeImage(image: ImageProxy?, rotationDegrees: Int): AnalysisResult? {
         return if (mAnalyzeImageErrorState) {
