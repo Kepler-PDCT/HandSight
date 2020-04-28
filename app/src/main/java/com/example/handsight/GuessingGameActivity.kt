@@ -1,11 +1,19 @@
 package com.example.handsight
 
-import androidx.appcompat.app.AppCompatActivity
+import android.R.attr.button
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_guessing_mode.*
 import logic.GuessingGame
 
 
@@ -21,14 +29,40 @@ class GuessingGameActivity : AppCompatActivity() {
 
     fun madeGuess(view: View) {
         val text = (view as Button).text
-        game.makeGuess(text.single())
-
-        if (game.finished) {
-            // Redirect to Score view.
-            // Until then just reset game.
-            game.reset()
+        var doneSound : MediaPlayer
+        if(game.makeGuess(text.single())) {
+            questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
+            doneSound = MediaPlayer.create(this, R.raw.success_perc)
+        } else {
+            questionFinish.setImageDrawable(getDrawable(R.drawable.fail))
+            doneSound = MediaPlayer.create(this, R.raw.fail_perc)
         }
-        updateUI()
+        questionFinish.visibility= View.VISIBLE
+        val anim = AlphaAnimation(0f, 1f)
+        anim.duration = 200
+        anim.repeatCount = 1
+        anim.repeatMode = Animation.REVERSE
+        anim.setAnimationListener(object : AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {
+                doneSound.start()
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                questionFinish.visibility = View.GONE
+                if (game.finished) {
+                    // Redirect to Score view.
+                    // Until then just reset game.
+                    game.reset()
+                }
+                updateUI()
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+
+            }
+        })
+        questionFinish.startAnimation(anim)
+
     }
 
     private fun setScore() {

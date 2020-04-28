@@ -1,12 +1,16 @@
 package com.example.handsight
 
+import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.TextureView
 import android.view.View
 import android.view.ViewStub
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import kotlinx.android.synthetic.main.activity_guessing_mode.*
 import logic.ImitationChallengeGame
 import java.util.*
 
@@ -37,7 +41,7 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
                     correctAnswerCountdownText.text = ""
                     game.makeGuess(predictions.topNClassNames[0]!!.single())
                     answerCurrentlyCorrect = false
-                    finishQuestion()
+                    finishQuestion(true)
                 },
                 1000
             )
@@ -49,9 +53,8 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
         }
 
         override fun onFinish() {
-            game.setScoreAccordingToPosition(bestGuessSoFar)
-            game.advanceGame()
-            finishQuestion()
+                finishQuestion(game.setScoreAccordingToPosition(bestGuessSoFar)
+            )
         }
     }
 
@@ -112,14 +115,48 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
     }
 
-    private fun finishQuestion() {
-        game.performanceScore = 0
-        if (game.finished) {
-            game.reset()
+    private fun finishQuestion(succeeded: Boolean) {
+
+        val doneSound : MediaPlayer
+        if(succeeded) {
+            questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
+            doneSound = MediaPlayer.create(this, R.raw.success_perc)
+        } else {
+            questionFinish.setImageDrawable(getDrawable(R.drawable.fail))
+            doneSound = MediaPlayer.create(this, R.raw.fail_perc)
         }
-        bestGuessSoFar = 99
-        questionCountDown.start()
-        updateUI()
+        val anim = AlphaAnimation(0f, 1f)
+        anim.duration = 300
+        anim.repeatCount = 1
+        anim.repeatMode = Animation.REVERSE
+        anim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {
+                doneSound.start()
+                questionFinish.visibility= View.VISIBLE
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                questionFinish.visibility = View.GONE
+
+                game.performanceScore = 0
+                if (game.finished) {
+                    game.reset()
+                }
+
+                bestGuessSoFar = 99
+                questionCountDown.start()
+                updateUI()
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+                questionFinish.visibility= View.VISIBLE
+            }
+        })
+
+        questionFinish.startAnimation(anim)
+
+
+
     }
 
 }

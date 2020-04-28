@@ -6,6 +6,7 @@
     style="@style/defaultBackground">
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -88,5 +89,16 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/questionFinish"
+        android:layout_width="411dp"
+        android:layout_height="512dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/checkmark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

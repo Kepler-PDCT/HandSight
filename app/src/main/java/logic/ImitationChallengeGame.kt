@@ -19,14 +19,21 @@ class ImitationChallengeGame : Game<Char>(10) {
         return isCorrect
     }
 
-    fun setScoreAccordingToPosition (guessPosition: Int) {
+    fun setScoreAccordingToPosition (guessPosition: Int) : Boolean {
+        var answerPresent=false
         if (guessPosition == 0) {
             updateScore(3)
+            answerPresent = true
         } else if (guessPosition == 1) {
             updateScore(2)
+            answerPresent = true
         } else if (guessPosition == 2) {
             updateScore(1)
+            answerPresent = true
         }
+        advanceGame()
+        return answerPresent
+
     }
 
     fun updatePerformanceScore(topKPredictions: Array<String?>, topKScores: FloatArray){

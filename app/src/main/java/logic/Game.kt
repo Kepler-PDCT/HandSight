@@ -25,7 +25,7 @@ abstract class Game<T> (numberOfQuestions : Int) {
 
 
 
-    private val questions: List<Question<T>> = (0..numberOfQuestions-1).map { nextQuestion() }
+    private var questions: List<Question<T>> = (0..numberOfQuestions-1).map { nextQuestion() }
 
     fun getQuestion(): Question<T> {
         return questions[currentQuestionIndex - 1]
@@ -51,5 +51,6 @@ abstract class Game<T> (numberOfQuestions : Int) {
         currentQuestionIndex = 1
         finished = false
         score = 0
+        questions = (0..numberOfQuestions-1).map { nextQuestion() }
     }
 }

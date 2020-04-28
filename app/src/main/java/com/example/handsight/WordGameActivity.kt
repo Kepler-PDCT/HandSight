@@ -1,6 +1,7 @@
 package com.example.handsight
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.*
@@ -36,7 +37,7 @@ class WordGameActivity : AbstractCameraXActivity() {
 
         override fun onFinish() {
             game.advanceWord()
-            updateLetter()
+            updateLetter(false)
         }
     }
 
@@ -53,7 +54,7 @@ class WordGameActivity : AbstractCameraXActivity() {
         inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
-        updateUI()
+        updateUI(true)
 
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
@@ -76,16 +77,21 @@ class WordGameActivity : AbstractCameraXActivity() {
 
         if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
             game.advanceWord()
-            updateLetter()
+            updateLetter(true)
         }
     }
 
-    private fun updateLetter() {
+    private fun updateLetter(succeded: Boolean) {
+        if(succeded) {
+            MediaPlayer.create(this, R.raw.success_perc).start()
+        } else {
+            MediaPlayer.create(this, R.raw.fail_perc).start()
+        }
         var delayTime: Long = 0
         questionCountDown.cancel()
         if (game.wordPosition == game.getQuestion().correctAnswer.length) {
             findViewById<TextView>(R.id.questionCountdown).text = "0"
-            updateUI()
+            updateUI(succeded)
             game.advanceGame()
             if (game.finished) {
                 game.reset()
@@ -95,11 +101,11 @@ class WordGameActivity : AbstractCameraXActivity() {
         Handler().postDelayed({
             game.performanceScore = 0
             questionCountDown.start()
-            updateUI()
+            updateUI(succeded)
         }, delayTime)
     }
 
-    private fun updateUI() {
+    private fun updateUI(succeded: Boolean) {
         val word = game.getQuestion().correctAnswer
 
         // Set the letters
@@ -124,10 +130,16 @@ class WordGameActivity : AbstractCameraXActivity() {
             val letterText = cardView.findViewById<TextView>(R.id.letterCardText)
             var constParams = constraintView.layoutParams as LinearLayout.LayoutParams
 
-            if (i < game.wordPosition) {
+            if (i == game.wordPosition-1) {
                 constParams.weight = 1.0f
-                Paris.style(cardView).apply(R.style.card_done)
-                Paris.style(letterText).apply(R.style.card_text_done)
+                if(succeded) {
+                    Paris.style(cardView).apply(R.style.card_success)
+                    Paris.style(letterText).apply(R.style.card_text_success)
+                } else {
+                    Paris.style(cardView).apply(R.style.card_fail)
+                    Paris.style(letterText).apply(R.style.card_text_fail)
+                }
+
             } else if (i == game.wordPosition) {
                 constParams.weight = 1.5f
                 Paris.style(cardView).apply(R.style.card_current)
