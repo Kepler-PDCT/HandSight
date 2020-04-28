@@ -1,7 +1,7 @@
 package com.example.handsight
 
 object Constants {
-    const val TAG = "PyTorchDemo"
+    const val TAG = "CRASH"
     val IMAGENET_CLASSES = arrayOf(
         "A",
         "B",
@@ -26,8 +26,7 @@ object Constants {
         "V",
         "W",
         "X",
-        "Y",
-        "?"
+        "Y"
     )
 
     val WORDS = arrayOf(

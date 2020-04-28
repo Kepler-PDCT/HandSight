@@ -99,7 +99,8 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         }
         predictions = result
         Log.d("TEST", result.topNClassNames[0].toString())
-        Log.d("TEST", result.topNScores[0].toString())
+        //Log.d("TEST", result.topNScores[0].toString())
+
         for (i in 0 until predictions.topNClassNames.size) {
             if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
                 perfText.text = predictions.topNScores[i].toString()

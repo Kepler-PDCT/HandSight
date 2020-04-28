@@ -113,9 +113,14 @@ abstract class AbstractCameraXActivity : BaseModuleActivity() {
                 FloatArray(TOP_K)
             for (i in 0 until TOP_K) {
                 val ix = ixs[i]
+                //ixs.forEach { Log.d("CRASH", it.toString()) }
                 topKClassNames[i] = Constants.IMAGENET_CLASSES[ix]
                 topKScores[i] = scores[ix]
+
+                Log.d("CRASH", topKClassNames[i].toString() +
+                ": " + topKScores[i].toString())
             }
+            Log.d("CRASH", "-")
             AnalysisResult(
                 topKClassNames,
                 topKScores,
