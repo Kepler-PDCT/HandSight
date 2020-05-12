@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.IMITATION_HIGHSCORE
 import com.example.handsight.Constants.PRIVATE_MODE
+import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
 import logic.ImitationChallengeGame
 import java.util.*
@@ -32,6 +33,8 @@ class ImitationGameActivity : AbstractCameraXActivity() {
     lateinit var questionCountdownText: TextView
     override val contentViewLayoutId: Int
         get() = R.layout.activity_imitation_mode
+
+    private var soundEnabled = true
 
     private var correctAnswerCountdown = object : CountDownTimer(2000, 100) {
         override fun onTick(millisUntilFinished: Long) {
@@ -79,6 +82,9 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         updateUI()
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
+
+        val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
     }
 
     private fun updateUI() {
@@ -126,10 +132,10 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
     }
 
-    private fun finishQuestion(succeeded:Boolean) {
+    private fun finishQuestion(succeeded: Boolean) {
 
-        val doneSound : MediaPlayer
-        if(succeeded) {
+        val doneSound: MediaPlayer
+        if (succeeded) {
             questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
             doneSound = MediaPlayer.create(this, R.raw.success_perc)
         } else {
@@ -142,8 +148,10 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         anim.repeatMode = Animation.REVERSE
         anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
-                doneSound.start()
-                doneSound.setOnCompletionListener { doneSound.stop() }
+                if (soundEnabled) {
+                    doneSound.start()
+                    doneSound.setOnCompletionListener { doneSound.stop() }
+                }
             }
 
             override fun onAnimationEnd(animation: Animation?) {
@@ -174,7 +182,7 @@ class ImitationGameActivity : AbstractCameraXActivity() {
             }
 
             override fun onAnimationStart(animation: Animation?) {
-                questionFinish.visibility= View.VISIBLE
+                questionFinish.visibility = View.VISIBLE
             }
         })
 
