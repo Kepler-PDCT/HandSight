@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: org.pytorch:pytorch_android:1.4.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5a8835e9ad0637d0ac6b9ec5c1d1ff9/jetified-pytorch_android-1.4.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5a8835e9ad0637d0ac6b9ec5c1d1ff9/jetified-pytorch_android-1.4.0.1/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.pytorch/pytorch_android/1.4.0.1/4a33d6f09646e75612c299c99cf1663b441e4f35/pytorch_android-1.4.0.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.pytorch/pytorch_android/1.4.0.1/f6957002c9ef22022f06b371bde04d61351aa41/pytorch_android-1.4.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
