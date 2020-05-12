@@ -5,6 +5,8 @@
     tools:context=".MainActivity"
     style="@style/defaultBackground">
 
+
+
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
@@ -14,6 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+
 
 
         <ImageView
@@ -28,7 +32,25 @@
             android:shadowDy="20"
             android:shadowRadius="10"
             android:translationZ="50dp"
-            app:srcCompat="@drawable/ic_header2" />
+            app:srcCompat="@drawable/ic_header2"
+            />
+
+        <ImageView
+            android:id="@+id/volumeIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="left"
+            android:layout_margin="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/volume_on"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:elevation="51dp"
+            android:translationZ="51dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="toggleSoundOption"/>
+
     </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -97,6 +119,14 @@
             style="@style/defaultButton"
             android:text="Word" />
 
+        <Button
+            android:id="@+id/wordModeButton2"
+            style="@style/defaultButton"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:onClick="launchWordMode"
+            android:text="Highscores" />
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -105,6 +135,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_end="60dp" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
