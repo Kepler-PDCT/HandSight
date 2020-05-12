@@ -85,7 +85,6 @@ class WordGameActivity : AbstractCameraXActivity() {
         super.onCreate(savedInstanceState)
         wordContainer = findViewById(R.id.wordContainer)
         questionCountdownText = findViewById(R.id.questionCountdown)
-        // perfText = findViewById(R.id.PerfText)
         inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
@@ -99,7 +98,6 @@ class WordGameActivity : AbstractCameraXActivity() {
         loadSoundOption()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun applyToUiAnalyzeImageResult(result: AnalysisResult?) {
         mMovingAvgSum += result!!.moduleForwardDuration
         mMovingAvgQueue.add(result!!.moduleForwardDuration)

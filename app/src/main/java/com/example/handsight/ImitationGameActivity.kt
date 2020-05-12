@@ -50,7 +50,6 @@ class ImitationGameActivity : AbstractCameraXActivity() {
     private val mMovingAvgQueue: Queue<Long> = LinkedList()
     private var answerCurrentlyCorrect: Boolean = false
     lateinit var correctAnswerCountdownText: TextView
-    lateinit var perfText: TextView
     lateinit var questionCountdownText: TextView
     lateinit var progressBarPadding : Guideline
     override val contentViewLayoutId: Int
@@ -126,8 +125,6 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
         correctAnswerCountdownText.text = ""
         questionCountdownText = findViewById(R.id.questionCountdown)
-        perfText = findViewById(R.id.PerfText)
-        perfText.text = ""
         progressBarPadding = ProgressBar.InverseGuideline
 
         updateUI()
@@ -164,13 +161,10 @@ class ImitationGameActivity : AbstractCameraXActivity() {
 
         for (i in 0 until predictions.topNClassNames.size) {
             if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
-                perfText.text = predictions.topNScores[i].toString()
                 if (bestGuessSoFar > i) {
                     bestGuessSoFar = i
                 }
                 Log.d("size", predictions.topNClassNames.size.toString())
-            } else {
-                perfText.text = ""
             }
         }
         if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
