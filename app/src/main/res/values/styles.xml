@@ -68,7 +68,7 @@
         <item name="android:backgroundTint">#84D86D</item>
     </style>
     <style name="card_fail">
-        <item name="android:backgroundTint">#FF6347</item>
+        <item name="android:backgroundTint">#f7664c</item>
     </style>
     <style name="card_text_success">
         <item name="android:textColor">#3CA33E</item>
