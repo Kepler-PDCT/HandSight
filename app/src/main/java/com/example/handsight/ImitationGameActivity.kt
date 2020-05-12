@@ -140,6 +140,7 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
                 doneSound.start()
+                doneSound.setOnCompletionListener { doneSound.stop() }
             }
 
             override fun onAnimationEnd(animation: Animation?) {

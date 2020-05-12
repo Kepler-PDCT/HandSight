@@ -132,7 +132,7 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
         anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
                 doneSound.start()
-                questionFinish.visibility= View.VISIBLE
+                doneSound.setOnCompletionListener { doneSound.stop() }
             }
 
             override fun onAnimationEnd(animation: Animation?) {

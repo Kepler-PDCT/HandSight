@@ -83,9 +83,12 @@ class WordGameActivity : AbstractCameraXActivity() {
 
     private fun updateLetter(succeded: Boolean) {
         if(succeded) {
-            MediaPlayer.create(this, R.raw.success_perc).start()
-        } else {
-            MediaPlayer.create(this, R.raw.fail_perc).start()
+            val doneSound = MediaPlayer.create(this, R.raw.success_perc)
+            doneSound.start()
+            doneSound.setOnCompletionListener { doneSound.stop()}        } else {
+            val doneSound = MediaPlayer.create(this, R.raw.fail_perc)
+            doneSound.start()
+            doneSound.setOnCompletionListener { doneSound.stop()}
         }
         var delayTime: Long = 0
         questionCountDown.cancel()

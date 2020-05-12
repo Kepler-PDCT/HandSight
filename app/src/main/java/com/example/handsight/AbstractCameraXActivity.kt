@@ -41,7 +41,7 @@ abstract class AbstractCameraXActivity : BaseModuleActivity() {
     private var mInputTensor: Tensor? = null
     private var mModule: Module? = null
     protected val moduleAssetName: String
-        protected get() = "model.pt"
+        protected get() = "model2.pt"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
