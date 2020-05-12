@@ -13,10 +13,10 @@ import com.example.handsight.Constants.WORD_HIGHSCORE
 import kotlinx.android.synthetic.main.activity_high_score.*
 
 class HighScoreActivity : AppCompatActivity() {
-    protected var guessingHighscore = 0F
-    protected var imitationHighscore = 0F
-    protected var challengeHighscore = 0F
-    protected var wordHighscore = 0F
+    var guessingHighscore = 0F
+    var imitationHighscore = 0F
+    var challengeHighscore = 0F
+    var wordHighscore = 0F
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
