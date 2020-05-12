@@ -23,10 +23,10 @@ class HighScoreActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_high_score)
         val sharedPref: SharedPreferences = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE)
-        guessingHighscore = sharedPref.getInt(GUESSING_HIGHSCORE, 0F)
-        imitationHighscore = sharedPref.getInt(IMITATION_HIGHSCORE, 0F)
-        challengeHighscore = sharedPref.getInt(CHALLENGE_HIGHSCORE, 0F)
-        wordHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0F)
+        guessingHighscore = sharedPref.getInt(GUESSING_HIGHSCORE, 0)
+        imitationHighscore = sharedPref.getInt(IMITATION_HIGHSCORE, 0)
+        challengeHighscore = sharedPref.getInt(CHALLENGE_HIGHSCORE, 0)
+        wordHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
         GuessingModeText.text = "Guessing Mode: $wordHighscore" //get from local storage
         ImitationModeText.text = "Imitation Mode: $imitationHighscore"
         ChallengeModeText.text = "Challenge Mode: $challengeHighscore"
