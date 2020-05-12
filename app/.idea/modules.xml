@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/app.iml" filepath="$PROJECT_DIR$/.idea/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../HandSight.iml" filepath="$PROJECT_DIR$/../HandSight.iml" group="HandSight" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/app.iml" filepath="$PROJECT_DIR$/.idea/app.iml" group="HandSight/app" />
     </modules>
   </component>
 </project>

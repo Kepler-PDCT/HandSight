@@ -18,8 +18,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-
-
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
@@ -34,22 +32,6 @@
             android:translationZ="50dp"
             app:srcCompat="@drawable/ic_header2"
             />
-
-        <ImageView
-            android:id="@+id/volumeIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="left"
-            android:layout_margin="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/volume_on"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:elevation="51dp"
-            android:translationZ="51dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="toggleSoundOption"/>
 
     </FrameLayout>
 
@@ -67,15 +49,14 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="50dp" />
 
-    <LinearLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#FFFFFF"
         android:elevation="10dp"
         android:gravity="bottom"
-        android:orientation="vertical"
         android:paddingLeft="20dp"
-        android:paddingTop="350dp"
         android:paddingRight="20dp"
         android:paddingBottom="10dp"
         android:translationZ="10dp"
@@ -83,59 +64,100 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline7"
         app:layout_constraintVertical_bias="0.0">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.5"
-            android:text="Let's start playing!"
-            android:textAlignment="center"
-            android:textSize="24sp" />
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/learningModeButton"
-            style="@style/defaultButton"
-            android:onClick="launchLearningMode"
-            android:text="Learning" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline4">
 
-        <Button
-            android:id="@+id/imitationModeButton"
-            style="@style/defaultButton"
-            android:onClick="launchImitationMode"
-            android:text="Imitation" />
+            <TextView
+                android:paddingHorizontal="20dp"
+                android:gravity="bottom|center"
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:autoSizeTextType="uniform"
+                android:text="Let's start playing!" />
 
-        <Button
-            android:id="@+id/challengeModeButton"
-            android:onClick="launchChallengeMode"
-            style="@style/defaultButton"
-            android:text="Challenge"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/wordModeButton"
-            android:onClick="launchWordMode"
-            style="@style/defaultButton"
-            android:text="Word" />
+                <Button
+                    android:id="@+id/learningModeButton"
+                    style="@style/homeScreenGridButton"
+                    android:onClick="launchLearningMode"
+                    android:text="Guessing" />
 
-        <Button
-            android:id="@+id/wordModeButton2"
-            style="@style/defaultButton"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:onClick="launchWordMode"
-            android:text="Highscores" />
+                <Button
+                    android:id="@+id/imitationModeButton"
+                    style="@style/homeScreenGridButton"
+                    android:onClick="launchImitationMode"
+                    android:text="Imitation" />
 
-    </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/challengeModeButton"
+                    style="@style/homeScreenGridButton"
+                    android:onClick="launchChallengeMode"
+                    android:text="Challenge" />
+
+                <Button
+                    android:id="@+id/wordModeButton"
+                    style="@style/homeScreenGridButton"
+                    android:onClick="launchWordMode"
+                    android:text="Word" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/wordModeButton2"
+                android:layout_weight="0.5"
+                style="@style/homeScreenHorzButton"
+                android:layout_width="match_parent"
+                android:onClick="launchWordMode"
+                android:text="Highscores" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="60dp" />
+        app:layout_constraintGuide_percent="0.94" />
 
-
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05608755" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

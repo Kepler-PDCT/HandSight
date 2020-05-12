@@ -18,6 +18,18 @@
         <item name="android:textSize">24sp</item>
     </style>
 
+    <style name="homeScreenHorzButton" parent="defaultButton">
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMaxTextSize">24sp</item>
+    </style>
+
+    <style name="homeScreenGridButton" parent="homeScreenHorzButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
     <style name="defaultBackground">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
