@@ -11,6 +11,9 @@ import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
 import com.airbnb.paris.Paris
+import com.example.handsight.Constants.HIGHSCORE_NAME
+import com.example.handsight.Constants.PRIVATE_MODE
+import com.example.handsight.Constants.WORD_HIGHSCORE
 import logic.WordGame
 import java.util.*
 
@@ -97,6 +100,18 @@ class WordGameActivity : AbstractCameraXActivity() {
             updateUI(succeded)
             game.advanceGame()
             if (game.finished) {
+                val sharedPref = getSharedPreferences(
+                    HIGHSCORE_NAME,
+                    PRIVATE_MODE
+                )
+                val oldHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
+                if (oldHighscore < game.score) {
+                    val editor = sharedPref.edit()
+                    editor.putInt(WORD_HIGHSCORE, game.score)
+                    editor.apply()
+
+                    // TODO display that new highscore was achieved.
+                }
                 game.reset()
             }
             delayTime = 2000
