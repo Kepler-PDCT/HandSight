@@ -12,6 +12,8 @@ abstract class Game<T> (numberOfQuestions : Int) {
     var wordPosition : Int = 0
     var elapsedTime : Long  = 0
 
+    var previousCorrectAnswers : MutableList<Char> = mutableListOf()
+
     val numberOfQuestions = numberOfQuestions
 
     var score = 0
@@ -48,6 +50,7 @@ abstract class Game<T> (numberOfQuestions : Int) {
     }
 
     fun reset() {
+        previousCorrectAnswers.clear()
         currentQuestionIndex = 1
         finished = false
         score = 0

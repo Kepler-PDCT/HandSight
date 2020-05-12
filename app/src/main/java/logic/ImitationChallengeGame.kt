@@ -10,8 +10,13 @@ class ImitationChallengeGame : Game<Char>(10) {
     var performanceScore = 0
 
     override fun nextQuestion(): Question<Char> {
-        val right = Constants.IMAGENET_CLASSES[(0..Constants.IMAGENET_CLASSES.size - 1).random()].single()
-        return Question(right, null)
+        val correctAnswer = Constants.IMAGENET_CLASSES[(0..Constants.IMAGENET_CLASSES.size - 1).random()].single()
+        if (correctAnswer in previousCorrectAnswers) {
+            nextQuestion()
+        } else {
+            previousCorrectAnswers.add(correctAnswer)
+        }
+        return Question(correctAnswer, null)
         Log.d("CRASH", Constants.IMAGENET_CLASSES.size.toString())
     }
 

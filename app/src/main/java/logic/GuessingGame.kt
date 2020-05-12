@@ -8,6 +8,11 @@ class GuessingGame : Game<Char>(10) {
             Constants.IMAGENET_CLASSES.slice(0..Constants.IMAGENET_CLASSES.size - 2).toList()
                 .shuffled().take(4).map { it.single() }.toList()
         val correctAnswer = questionArray[(0..3).random()]
+        if (correctAnswer in previousCorrectAnswers) {
+           nextQuestion()
+        } else {
+            previousCorrectAnswers.add(correctAnswer)
+        }
         return Question(correctAnswer, questionArray)
     }
 
