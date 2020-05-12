@@ -4,11 +4,11 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
-import android.view.TextureView
-import android.view.View
-import android.view.ViewStub
+import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -17,6 +17,7 @@ import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
 import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
+import kotlinx.android.synthetic.main.finish_popup.view.*
 import logic.ImitationChallengeGame
 import java.util.*
 
@@ -124,36 +125,39 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
         findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score}")
     }
 
+    var gameFrozen = false
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun applyToUiAnalyzeImageResult(result: AnalysisResult?) {
-        mMovingAvgSum += result!!.moduleForwardDuration
-        mMovingAvgQueue.add(result!!.moduleForwardDuration)
-        if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
-            mMovingAvgSum -= mMovingAvgQueue.remove()
-        }
-        predictions = result
-
-        for (i in 0 until predictions.topNClassNames.size) {
-            if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
-                perfText.text = predictions.topNScores[i].toString()
-                if (bestGuessSoFar > i) {
-                    bestGuessSoFar = i
-                }
-            } else {
-                perfText.text = ""
+        if(!gameFrozen) {
+            mMovingAvgSum += result!!.moduleForwardDuration
+            mMovingAvgQueue.add(result!!.moduleForwardDuration)
+            if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
+                mMovingAvgSum -= mMovingAvgQueue.remove()
             }
-            Log.d("TEST2", predictions.topNClassNames[i].toString())
-        }
-        game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
-        if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
-            correctAnswerCountdown.start()
-            answerCurrentlyCorrect = true
-        } else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
-            correctAnswerCountdownText.text = ""
-            correctAnswerCountdown.cancel()
-            answerCurrentlyCorrect = false
-        }
+            predictions = result
 
+            for (i in 0 until predictions.topNClassNames.size) {
+                if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
+                    perfText.text = predictions.topNScores[i].toString()
+                    if (bestGuessSoFar > i) {
+                        bestGuessSoFar = i
+                    }
+                } else {
+                    perfText.text = ""
+                }
+                Log.d("TEST2", predictions.topNClassNames[i].toString())
+            }
+            game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+            if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
+                correctAnswerCountdown.start()
+                answerCurrentlyCorrect = true
+            } else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
+                correctAnswerCountdownText.text = ""
+                correctAnswerCountdown.cancel()
+                answerCurrentlyCorrect = false
+            }
+        }
     }
 
     private fun finishQuestion(succeeded: Boolean) {
@@ -176,14 +180,17 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
                     doneSound.start()
                     doneSound.setOnCompletionListener { doneSound.stop() }
                 }
-
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                questionFinish.visibility = View.GONE
-
                 game.performanceScore = 0
                 if (game.finished) {
+                    val inflater : LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    val popupView = inflater.inflate(R.layout.finish_popup,null)
+                    val width = LinearLayout.LayoutParams.WRAP_CONTENT
+                    val height = LinearLayout.LayoutParams.WRAP_CONTENT
+                    val focusable = true
+                    val popupWindow = PopupWindow(popupView, width, height, focusable)
+                    popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false}
+                    popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
+                    popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0)
                     val sharedPref = getSharedPreferences(
                         HIGHSCORE_NAME,
                         PRIVATE_MODE
@@ -196,22 +203,26 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
                         // TODO display that new highscore was achieved.
                     }
-                    game.reset()
+                }
+                else {
+                    bestGuessSoFar = 99
+                    questionCountDown.start()
+                    updateUI()
+                    gameFrozen = false
                 }
 
-                bestGuessSoFar = 99
-                questionCountDown.start()
-                updateUI()
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                questionFinish.visibility = View.GONE
             }
 
             override fun onAnimationStart(animation: Animation?) {
                 questionFinish.visibility = View.VISIBLE
+                gameFrozen = true
             }
         })
 
         questionFinish.startAnimation(anim)
-
-
     }
-
 }
