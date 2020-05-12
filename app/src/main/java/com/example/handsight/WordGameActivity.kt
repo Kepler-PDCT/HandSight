@@ -6,11 +6,13 @@ import android.os.*
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
 import com.airbnb.paris.Paris
+import kotlinx.android.synthetic.main.finish_popup.view.*
 import logic.WordGame
 import java.util.*
 
@@ -60,24 +62,28 @@ class WordGameActivity : AbstractCameraXActivity() {
         questionCountDown.start()
     }
 
+    var gameFrozen = false
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun applyToUiAnalyzeImageResult(result: AnalysisResult?) {
-        mMovingAvgSum += result!!.moduleForwardDuration
-        mMovingAvgQueue.add(result!!.moduleForwardDuration)
-        if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
-            mMovingAvgSum -= mMovingAvgQueue.remove()
-        }
-        predictions = result
+        if (!gameFrozen) {
+            mMovingAvgSum += result!!.moduleForwardDuration
+            mMovingAvgQueue.add(result!!.moduleForwardDuration)
+            if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
+                mMovingAvgSum -= mMovingAvgQueue.remove()
+            }
+            predictions = result
 
-        game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+            game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
 
-        for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
-            Log.d("TEST", prediction)
-        }
+            for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
+                Log.d("TEST", prediction)
+            }
 
-        if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
-            game.advanceWord()
-            updateLetter(true)
+            if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
+                game.advanceWord()
+                updateLetter(true)
+            }
         }
     }
 
@@ -96,16 +102,26 @@ class WordGameActivity : AbstractCameraXActivity() {
             findViewById<TextView>(R.id.questionCountdown).text = "0"
             updateUI(succeded)
             game.advanceGame()
-            if (game.finished) {
-                game.reset()
-            }
-            delayTime = 2000
+            delayTime = 500
         }
-        Handler().postDelayed({
-            game.performanceScore = 0
-            questionCountDown.start()
-            updateUI(succeded)
-        }, delayTime)
+        if (game.finished) {
+            gameFrozen = true
+            val inflater : LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val popupView = inflater.inflate(R.layout.finish_popup,null)
+            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val focusable = false
+            val popupWindow = PopupWindow(popupView, width, height, focusable)
+            popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); questionCountDown.start(); updateUI(succeded); gameFrozen = false}
+            popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
+            popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0)
+        } else {
+            Handler().postDelayed({
+                game.performanceScore = 0
+                questionCountDown.start()
+                updateUI(succeded)
+            }, delayTime)
+        }
     }
 
     private fun updateUI(succeded: Boolean) {
