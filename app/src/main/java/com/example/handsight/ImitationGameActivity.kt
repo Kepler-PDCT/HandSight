@@ -12,6 +12,10 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import com.example.handsight.Constants.HIGHSCORE_NAME
+import com.example.handsight.Constants.IMITATION_HIGHSCORE
+import com.example.handsight.Constants.PRIVATE_MODE
+import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
 import kotlinx.android.synthetic.main.finish_popup.view.*
 import logic.ImitationChallengeGame
@@ -32,6 +36,8 @@ class ImitationGameActivity : AbstractCameraXActivity() {
     override val contentViewLayoutId: Int
         get() = R.layout.activity_imitation_mode
 
+    private var soundEnabled = true
+
     private var correctAnswerCountdown = object : CountDownTimer(2000, 100) {
         override fun onTick(millisUntilFinished: Long) {
             correctAnswerCountdownText.text = (millisUntilFinished / 1000f + 1).toInt().toString()
@@ -49,6 +55,34 @@ class ImitationGameActivity : AbstractCameraXActivity() {
                 },
                 1000
             )
+        }
+    }
+
+    fun loadSoundOption(): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        graphicalSoundToggle(pref.getBoolean(SOUND_NAME, true))
+        return pref.getBoolean(SOUND_NAME, true)
+    }
+
+    fun toggleSoundOption(view: View): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        val state = pref.getBoolean(SOUND_NAME, true).not()
+        val editor = pref.edit()
+        editor.putBoolean(SOUND_NAME, state)
+        editor.apply()
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        graphicalSoundToggle(state)
+        return state
+    }
+
+    fun graphicalSoundToggle(state: Boolean){
+        if (state){
+            val res = resources.getDrawable(R.drawable.volume_on)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
+        }
+        else{
+            val res = resources.getDrawable(R.drawable.volume_mute)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
         }
     }
 
@@ -78,6 +112,10 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         updateUI()
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
+
+        val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        loadSoundOption()
     }
 
     private fun updateUI() {
@@ -129,10 +167,10 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         }
     }
 
-    private fun finishQuestion(succeeded:Boolean) {
+    private fun finishQuestion(succeeded: Boolean) {
 
-        val doneSound : MediaPlayer
-        if(succeeded) {
+        val doneSound: MediaPlayer
+        if (succeeded) {
             questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
             doneSound = MediaPlayer.create(this, R.raw.success_perc)
         } else {
@@ -145,8 +183,10 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         anim.repeatMode = Animation.REVERSE
         anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
-                doneSound.start()
-                doneSound.setOnCompletionListener { doneSound.stop() }
+                if (soundEnabled) {
+                    doneSound.start()
+                    doneSound.setOnCompletionListener { doneSound.stop() }
+                }
             }
 
             override fun onAnimationEnd(animation: Animation?) {
@@ -163,6 +203,18 @@ class ImitationGameActivity : AbstractCameraXActivity() {
                     popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false}
                     popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
                     popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0)
+                    val sharedPref = getSharedPreferences(
+                        HIGHSCORE_NAME,
+                        PRIVATE_MODE
+                    )
+                    val oldHighscore = sharedPref.getInt(IMITATION_HIGHSCORE, 0)
+                    if (oldHighscore < game.score) {
+                        val editor = sharedPref.edit()
+                        editor.putInt(IMITATION_HIGHSCORE, game.score)
+                        editor.apply()
+
+                        // TODO display that new highscore was achieved.
+                    }
                 }
 
                 else {
@@ -177,9 +229,9 @@ class ImitationGameActivity : AbstractCameraXActivity() {
             override fun onAnimationStart(animation: Animation?) {
                 questionFinish.visibility= View.VISIBLE
                 gameFrozen = true
+
             }
         })
-
         questionFinish.startAnimation(anim)
 
     }

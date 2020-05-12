@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -13,6 +14,10 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.children
 import com.airbnb.paris.Paris
 import kotlinx.android.synthetic.main.finish_popup.view.*
+import com.example.handsight.Constants.HIGHSCORE_NAME
+import com.example.handsight.Constants.PRIVATE_MODE
+import com.example.handsight.Constants.SOUND_NAME
+import com.example.handsight.Constants.WORD_HIGHSCORE
 import logic.WordGame
 import java.util.*
 
@@ -30,6 +35,8 @@ class WordGameActivity : AbstractCameraXActivity() {
     lateinit var inflater: LayoutInflater
     lateinit var letterCards: List<View>
     private val game = WordGame()
+    private var soundEnabled = true
+
 
     private var questionCountDown = object : CountDownTimer(game.timerLength, 100) {
         override fun onTick(millisUntilFinished: Long) {
@@ -40,6 +47,34 @@ class WordGameActivity : AbstractCameraXActivity() {
         override fun onFinish() {
             game.advanceWord()
             updateLetter(false)
+        }
+    }
+
+    fun loadSoundOption(): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        graphicalSoundToggle(pref.getBoolean(SOUND_NAME, true))
+        return pref.getBoolean(SOUND_NAME, true)
+    }
+
+    fun toggleSoundOption(view: View): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        val state = pref.getBoolean(SOUND_NAME, true).not()
+        val editor = pref.edit()
+        editor.putBoolean(SOUND_NAME, state)
+        editor.apply()
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        graphicalSoundToggle(state)
+        return state
+    }
+
+    fun graphicalSoundToggle(state: Boolean){
+        if (state){
+            val res = resources.getDrawable(R.drawable.volume_on)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
+        }
+        else{
+            val res = resources.getDrawable(R.drawable.volume_mute)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
         }
     }
 
@@ -60,6 +95,10 @@ class WordGameActivity : AbstractCameraXActivity() {
 
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
+
+        val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        loadSoundOption()
     }
 
     var gameFrozen = false
@@ -88,13 +127,16 @@ class WordGameActivity : AbstractCameraXActivity() {
     }
 
     private fun updateLetter(succeded: Boolean) {
-        if(succeded) {
-            val doneSound = MediaPlayer.create(this, R.raw.success_perc)
-            doneSound.start()
-            doneSound.setOnCompletionListener { doneSound.stop()}        } else {
-            val doneSound = MediaPlayer.create(this, R.raw.fail_perc)
-            doneSound.start()
-            doneSound.setOnCompletionListener { doneSound.stop()}
+        if (soundEnabled) {
+            if (succeded) {
+                val doneSound = MediaPlayer.create(this, R.raw.success_perc)
+                doneSound.start()
+                doneSound.setOnCompletionListener { doneSound.stop() }
+            } else {
+                val doneSound = MediaPlayer.create(this, R.raw.fail_perc)
+                doneSound.start()
+                doneSound.setOnCompletionListener { doneSound.stop() }
+            }
         }
         var delayTime: Long = 0
         questionCountDown.cancel()
@@ -115,12 +157,25 @@ class WordGameActivity : AbstractCameraXActivity() {
             popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); questionCountDown.start(); updateUI(succeded); gameFrozen = false}
             popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
             popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0)
+            val sharedPref = getSharedPreferences(
+                HIGHSCORE_NAME,
+                PRIVATE_MODE
+            )
+            val oldHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
+            if (oldHighscore < game.score) {
+                val editor = sharedPref.edit()
+                editor.putInt(WORD_HIGHSCORE, game.score)
+                editor.apply()
+
+                // TODO display that new highscore was achieved.
+            }
         } else {
             Handler().postDelayed({
                 game.performanceScore = 0
                 questionCountDown.start()
                 updateUI(succeded)
             }, delayTime)
+
         }
     }
 
@@ -149,9 +204,9 @@ class WordGameActivity : AbstractCameraXActivity() {
             val letterText = cardView.findViewById<TextView>(R.id.letterCardText)
             var constParams = constraintView.layoutParams as LinearLayout.LayoutParams
 
-            if (i == game.wordPosition-1) {
+            if (i == game.wordPosition - 1) {
                 constParams.weight = 1.0f
-                if(succeded) {
+                if (succeded) {
                     Paris.style(cardView).apply(R.style.card_success)
                     Paris.style(letterText).apply(R.style.card_text_success)
                 } else {
