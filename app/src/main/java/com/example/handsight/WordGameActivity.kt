@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -47,6 +48,34 @@ class WordGameActivity : AbstractCameraXActivity() {
         }
     }
 
+    fun loadSoundOption(): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        graphicalSoundToggle(pref.getBoolean(SOUND_NAME, true))
+        return pref.getBoolean(SOUND_NAME, true)
+    }
+
+    fun toggleSoundOption(view: View): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        val state = pref.getBoolean(SOUND_NAME, true).not()
+        val editor = pref.edit()
+        editor.putBoolean(SOUND_NAME, state)
+        editor.apply()
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        graphicalSoundToggle(state)
+        return state
+    }
+
+    fun graphicalSoundToggle(state: Boolean){
+        if (state){
+            val res = resources.getDrawable(R.drawable.volume_on)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
+        }
+        else{
+            val res = resources.getDrawable(R.drawable.volume_mute)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
+        }
+    }
+
     override val cameraPreviewTextureView: TextureView
         get() = (findViewById<View>(R.id.image_classification_texture_view_stub) as ViewStub)
             .inflate()
@@ -67,6 +96,7 @@ class WordGameActivity : AbstractCameraXActivity() {
 
         val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
         soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        loadSoundOption()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -91,8 +121,8 @@ class WordGameActivity : AbstractCameraXActivity() {
     }
 
     private fun updateLetter(succeded: Boolean) {
-        if (succeded) {
-            if (soundEnabled) {
+        if (soundEnabled) {
+            if (succeded) {
                 val doneSound = MediaPlayer.create(this, R.raw.success_perc)
                 doneSound.start()
                 doneSound.setOnCompletionListener { doneSound.stop() }
