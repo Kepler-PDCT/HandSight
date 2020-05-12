@@ -110,9 +110,9 @@ class GuessingGameActivity : AppCompatActivity() {
                             editor.apply()
 
                             // TODO display that new highscore was achieved.
-                        } else {
-                            updateUI()
                         }
+                    } else {
+                        updateUI()
                     }
                 }
                 override fun onAnimationEnd(animation: Animation?) {

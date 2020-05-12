@@ -87,7 +87,6 @@ class WordGameActivity : AbstractCameraXActivity() {
         super.onCreate(savedInstanceState)
         wordContainer = findViewById(R.id.wordContainer)
         questionCountdownText = findViewById(R.id.questionCountdown)
-        // perfText = findViewById(R.id.PerfText)
         inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
@@ -114,7 +113,7 @@ class WordGameActivity : AbstractCameraXActivity() {
             predictions = result
 
             game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
-
+            Utils.updatePerformanceMeter(this, game.performanceScore)
             for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
                 Log.d("TEST", prediction)
             }

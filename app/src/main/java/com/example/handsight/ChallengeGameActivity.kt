@@ -31,7 +31,6 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
     private val mMovingAvgQueue: Queue<Long> = LinkedList()
     private var answerCurrentlyCorrect: Boolean = false
     lateinit var correctAnswerCountdownText: TextView
-    lateinit var perfText: TextView
     lateinit var questionCountdownText: TextView
     override val contentViewLayoutId: Int
         get() = R.layout.activity_challenge_mode
@@ -105,8 +104,6 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
         correctAnswerCountdownText.text = ""
         questionCountdownText = findViewById(R.id.questionCountdown)
-        perfText = findViewById(R.id.PerfText)
-        perfText.text = ""
 
         updateUI()
         questionStartTime = System.currentTimeMillis()
@@ -139,16 +136,14 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
             for (i in 0 until predictions.topNClassNames.size) {
                 if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
-                    perfText.text = predictions.topNScores[i].toString()
                     if (bestGuessSoFar > i) {
                         bestGuessSoFar = i
                     }
-                } else {
-                    perfText.text = ""
                 }
                 Log.d("TEST2", predictions.topNClassNames[i].toString())
             }
             game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+            Utils.updatePerformanceMeter(this, game.performanceScore)
             if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
                 correctAnswerCountdown.start()
                 answerCurrentlyCorrect = true
