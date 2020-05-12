@@ -1,6 +1,14 @@
 package com.example.handsight
 
 object Constants {
+    var PRIVATE_MODE = 0
+    val HIGHSCORE_NAME = "high_score"
+    val GUESSING_HIGHSCORE = "GUESSING_HIGHSCORE"
+    val IMITATION_HIGHSCORE = "IMITATION_HIGHSCORE"
+    val CHALLENGE_HIGHSCORE = "CHALLENGE_HIGHSCORE"
+    val WORD_HIGHSCORE = "WORD_HIGHSCORE"
+
+
     const val TAG = "CRASH"
     val IMAGENET_CLASSES = arrayOf(
         "A",
