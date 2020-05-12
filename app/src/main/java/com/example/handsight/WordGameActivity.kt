@@ -13,6 +13,7 @@ import androidx.core.view.children
 import com.airbnb.paris.Paris
 import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
+import com.example.handsight.Constants.SOUND_NAME
 import com.example.handsight.Constants.WORD_HIGHSCORE
 import logic.WordGame
 import java.util.*
@@ -31,6 +32,8 @@ class WordGameActivity : AbstractCameraXActivity() {
     lateinit var inflater: LayoutInflater
     lateinit var letterCards: List<View>
     private val game = WordGame()
+    private var soundEnabled = true
+
 
     private var questionCountDown = object : CountDownTimer(game.timerLength, 100) {
         override fun onTick(millisUntilFinished: Long) {
@@ -61,6 +64,9 @@ class WordGameActivity : AbstractCameraXActivity() {
 
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
+
+        val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -85,13 +91,16 @@ class WordGameActivity : AbstractCameraXActivity() {
     }
 
     private fun updateLetter(succeded: Boolean) {
-        if(succeded) {
-            val doneSound = MediaPlayer.create(this, R.raw.success_perc)
-            doneSound.start()
-            doneSound.setOnCompletionListener { doneSound.stop()}        } else {
-            val doneSound = MediaPlayer.create(this, R.raw.fail_perc)
-            doneSound.start()
-            doneSound.setOnCompletionListener { doneSound.stop()}
+        if (succeded) {
+            if (soundEnabled) {
+                val doneSound = MediaPlayer.create(this, R.raw.success_perc)
+                doneSound.start()
+                doneSound.setOnCompletionListener { doneSound.stop() }
+            } else {
+                val doneSound = MediaPlayer.create(this, R.raw.fail_perc)
+                doneSound.start()
+                doneSound.setOnCompletionListener { doneSound.stop() }
+            }
         }
         var delayTime: Long = 0
         questionCountDown.cancel()
@@ -148,9 +157,9 @@ class WordGameActivity : AbstractCameraXActivity() {
             val letterText = cardView.findViewById<TextView>(R.id.letterCardText)
             var constParams = constraintView.layoutParams as LinearLayout.LayoutParams
 
-            if (i == game.wordPosition-1) {
+            if (i == game.wordPosition - 1) {
                 constParams.weight = 1.0f
-                if(succeded) {
+                if (succeded) {
                     Paris.style(cardView).apply(R.style.card_success)
                     Paris.style(letterText).apply(R.style.card_text_success)
                 } else {

@@ -17,16 +17,21 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.handsight.Constants.GUESSING_HIGHSCORE
 import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
+import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
 import logic.GuessingGame
 
 
 class GuessingGameActivity : AppCompatActivity() {
+    private var soundEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guessing_mode)
         updateUI()
+
+        val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
     }
 
     private val game = GuessingGame()
@@ -48,7 +53,11 @@ class GuessingGameActivity : AppCompatActivity() {
         anim.repeatMode = Animation.REVERSE
         anim.setAnimationListener(object : AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
-                doneSound.start()
+                if (soundEnabled) {
+                    doneSound.start()
+                    doneSound.setOnCompletionListener { doneSound.stop() }
+                }
+
             }
 
             override fun onAnimationEnd(animation: Animation?) {
