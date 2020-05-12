@@ -1,7 +1,16 @@
 package com.example.handsight
 
+import android.animation.ValueAnimator
+import android.app.Activity
 import android.content.Context
+import android.graphics.Color
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import android.util.Log
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import kotlinx.android.synthetic.main.progress_bar.*
+import kotlinx.android.synthetic.main.progress_bar.view.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -53,5 +62,33 @@ object Utils {
             }
         }
         return ixs
+    }
+
+    var lastColor = Color.HSVToColor(floatArrayOf(27F, 0.82F, 0.70F))
+    fun updatePerformanceMeter(activity: Activity, performanceScore: Int) {
+        // Color animation
+        var perf = performanceScore/100
+        var color = Color.HSVToColor(floatArrayOf(27F+(100*perf).toFloat(), 0.82F, 0.70F+0.15F*perf))
+
+        Log.d("ANIM", activity.ProgressFill.cardBackgroundColor.defaultColor.toString())
+
+        val valueAnimator = ValueAnimator.ofArgb(lastColor, color)
+        valueAnimator.addUpdateListener {
+            val value = it.animatedValue as Int
+            activity.ProgressFill.setBackgroundColor(value)
+        }
+        valueAnimator.duration = 1000
+        valueAnimator.start()
+        lastColor = color
+
+        // Height animation
+        var progressBar = activity.findViewById<ConstraintLayout>(R.id.ProgressBar).findViewById<ConstraintLayout>(R.id.ProgressBarInnerConstraintView)
+        val set = ConstraintSet()
+        set.clone(progressBar.ProgressBarInnerConstraintView)
+        set.setGuidelinePercent(R.id.InverseGuideline, 1-(performanceScore.toFloat()/100))
+        var transition = ChangeBounds()
+        transition.setDuration(1000)
+        TransitionManager.beginDelayedTransition(progressBar, transition)
+        set.applyTo(progressBar)
     }
 }

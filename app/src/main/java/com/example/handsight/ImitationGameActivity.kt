@@ -1,7 +1,16 @@
 package com.example.handsight
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.graphics.Color
+import android.graphics.drawable.TransitionDrawable
 import android.media.MediaPlayer
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.TextureView
 import android.view.View
@@ -11,9 +20,19 @@ import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import kotlinx.android.synthetic.main.activity_guessing_mode.*
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.Guideline
+import com.example.handsight.Utils.updatePerformanceMeter
+import kotlinx.android.synthetic.main.activity_guessing_mode.questionFinish
+import kotlinx.android.synthetic.main.activity_imitation_mode.*
+import kotlinx.android.synthetic.main.progress_bar.*
+import kotlinx.android.synthetic.main.progress_bar.view.*
 import logic.ImitationChallengeGame
+import java.time.LocalDateTime
 import java.util.*
+
 
 class ImitationGameActivity : AbstractCameraXActivity() {
 
@@ -27,6 +46,7 @@ class ImitationGameActivity : AbstractCameraXActivity() {
     lateinit var correctAnswerCountdownText: TextView
     lateinit var perfText: TextView
     lateinit var questionCountdownText: TextView
+    lateinit var progressBarPadding : Guideline
     override val contentViewLayoutId: Int
         get() = R.layout.activity_imitation_mode
 
@@ -72,6 +92,7 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         questionCountdownText = findViewById(R.id.questionCountdown)
         perfText = findViewById(R.id.PerfText)
         perfText.text = ""
+        progressBarPadding = ProgressBar.InverseGuideline
 
         updateUI()
         questionStartTime = System.currentTimeMillis()
@@ -121,6 +142,7 @@ class ImitationGameActivity : AbstractCameraXActivity() {
             answerCurrentlyCorrect = false
         }
         game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+        updatePerformanceMeter(this, game.performanceScore)
     }
 
     private fun finishQuestion(succeeded:Boolean) {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/defaultBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/defaultBackground"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/questionTextView"
@@ -23,14 +23,14 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:background="@color/black_overlay">
 
         <FrameLayout
-            android:translationY="0dp"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@android:color/black"
+            android:translationY="0dp"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,11 +69,11 @@
         android:id="@+id/scoreTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
         android:layout_marginBottom="16dp"
         android:text="Score: 3"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:layout_marginVertical="16dp"
         android:textSize="24sp" />
 
     <LinearLayout
@@ -87,6 +87,41 @@
         android:orientation="horizontal">
 
         <include layout="@layout/module_letter_card" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:rotation="90">
+
+            <include
+                android:id="@+id/ProgressBar"
+                layout="@layout/progress_bar"
+                android:layout_width="40dp"
+                android:layout_height="350dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 

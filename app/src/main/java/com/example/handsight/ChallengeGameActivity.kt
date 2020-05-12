@@ -104,6 +104,7 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
             Log.d("TEST2", predictions.topNClassNames[i].toString())
         }
         game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+        Utils.updatePerformanceMeter(this, game.performanceScore)
         if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
             correctAnswerCountdown.start()
             answerCurrentlyCorrect = true
