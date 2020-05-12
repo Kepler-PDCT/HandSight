@@ -215,7 +215,6 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
             override fun onAnimationEnd(animation: Animation?) {
                 questionFinish.visibility = View.GONE
-
             }
 
             override fun onAnimationStart(animation: Animation?) {

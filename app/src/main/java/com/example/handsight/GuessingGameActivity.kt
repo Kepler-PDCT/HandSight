@@ -38,7 +38,6 @@ class GuessingGameActivity : AppCompatActivity() {
         graphicalSoundToggle(pref.getBoolean(SOUND_NAME, true))
         return pref.getBoolean(SOUND_NAME, true)
     }
-
     fun toggleSoundOption(view: View): Boolean {
         val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
         val state = pref.getBoolean(SOUND_NAME, true).not()
