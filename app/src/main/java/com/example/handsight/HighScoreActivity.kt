@@ -27,9 +27,9 @@ class HighScoreActivity : AppCompatActivity() {
         imitationHighscore = sharedPref.getInt(IMITATION_HIGHSCORE, 0)
         challengeHighscore = sharedPref.getInt(CHALLENGE_HIGHSCORE, 0)
         wordHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
-        GuessingModeText.text = "Guessing Mode: $wordHighscore" //get from local storage
-        ImitationModeText.text = "Imitation Mode: $imitationHighscore"
-        ChallengeModeText.text = "Challenge Mode: $challengeHighscore"
-        WordModeText.text = "Word Mode: $wordHighscore"
+        guessing_highscore_score_text.text = "$wordHighscore" //get from local storage
+        imitation_highscore_score_text.text = "$imitationHighscore"
+        challenge_highscore_score_text.text = "$challengeHighscore"
+        word_highscore_score_text.text = "$wordHighscore"
     }
 }

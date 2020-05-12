@@ -1,40 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="133dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="115dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="134dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="115dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button2" />
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="#FFFFFF"
+    android:foregroundGravity="center_horizontal"
+    android:orientation="vertical"
+    style="@style/defaultBackground"
+    app:layout_anchorGravity="center_horizontal">
 
     <TextView
-        android:id="@+id/CongratsView"
+        android:id="@+id/congratsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="95dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10px"
+        android:layout_marginStart="92dp"
         android:layout_marginTop="104dp"
+        android:fontFamily="sans-serif-black"
         android:text="Congratulations! The game is done"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/scoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="25px"
+        android:layout_marginStart="180dp"
+        android:fontFamily="sans-serif"
+        android:text="Score:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/HighscoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="25px"
+        android:layout_marginStart="168dp"
+        android:fontFamily="sans-serif"
+        android:text="Highscore:"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5px"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/RestartButton"
+            android:layout_width="133dp"
+            android:layout_height="43dp"
+            android:layout_margin="10px"
+            android:layout_marginStart="50dp"
+            android:layout_marginBottom="115dp"
+            android:text="Restart" />
+
+        <Button
+            android:id="@+id/MenuButton"
+            android:layout_width="134dp"
+            android:layout_height="45dp"
+            android:layout_margin="10px"
+            android:layout_marginStart="52dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="115dp"
+            android:text="Main menu" />
+    </LinearLayout>
+
+</LinearLayout>

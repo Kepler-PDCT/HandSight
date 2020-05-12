@@ -1,25 +1,22 @@
 package com.example.handsight
-
-import android.R.attr.button
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.handsight.Constants.GUESSING_HIGHSCORE
 import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
 import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
+import kotlinx.android.synthetic.main.finish_popup.view.*
 import logic.GuessingGame
 
 
@@ -41,7 +38,6 @@ class GuessingGameActivity : AppCompatActivity() {
         graphicalSoundToggle(pref.getBoolean(SOUND_NAME, true))
         return pref.getBoolean(SOUND_NAME, true)
     }
-
     fun toggleSoundOption(view: View): Boolean {
         val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
         val state = pref.getBoolean(SOUND_NAME, true).not()
@@ -64,56 +60,72 @@ class GuessingGameActivity : AppCompatActivity() {
         }
     }
 
-    private val game = GuessingGame()
+    private var game = GuessingGame()
+
+    var gameFrozen = false
 
     fun madeGuess(view: View) {
-        val text = (view as Button).text
-        var doneSound: MediaPlayer
-        if (game.makeGuess(text.single())) {
-            questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
-            doneSound = MediaPlayer.create(this, R.raw.success_perc)
-        } else {
-            questionFinish.setImageDrawable(getDrawable(R.drawable.fail))
-            doneSound = MediaPlayer.create(this, R.raw.fail_perc)
-        }
-        questionFinish.visibility = View.VISIBLE
-        val anim = AlphaAnimation(0f, 1f)
-        anim.duration = 200
-        anim.repeatCount = 1
-        anim.repeatMode = Animation.REVERSE
-        anim.setAnimationListener(object : AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
-                if (soundEnabled) {
-                    doneSound.start()
-                    doneSound.setOnCompletionListener { doneSound.stop() }
-                }
-
+        if(!gameFrozen) {
+            val text = (view as Button).text
+            var doneSound : MediaPlayer
+            if(game.makeGuess(text.single())) {
+                questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
+                doneSound = MediaPlayer.create(this, R.raw.success_perc)
+            } else {
+                questionFinish.setImageDrawable(getDrawable(R.drawable.fail))
+                doneSound = MediaPlayer.create(this, R.raw.fail_perc)
             }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                questionFinish.visibility = View.GONE
-                if (game.finished) {
-                    val sharedPref = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE)
-                    val oldHighscore = sharedPref.getInt(GUESSING_HIGHSCORE, 0)
-                    if (oldHighscore < game.score) {
-                        val editor = sharedPref.edit()
-                        editor.putInt(GUESSING_HIGHSCORE, game.score)
-                        editor.apply()
-
-                        // TODO display that new highscore was achieved.
+            questionFinish.visibility= View.VISIBLE
+            val anim = AlphaAnimation(0f, 1f)
+            anim.duration = 200
+            anim.repeatCount = 1
+            anim.repeatMode = Animation.REVERSE
+            anim.setAnimationListener(object : AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {
+                    if (soundEnabled) {
+                        doneSound.start()
+                        doneSound.setOnCompletionListener { doneSound.stop() }
                     }
+                    if (game.finished) {
+                        val inflater: LayoutInflater =
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                        val popupView = inflater.inflate(R.layout.finish_popup, null)
+                        val width = LinearLayout.LayoutParams.WRAP_CONTENT
+                        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+                        val focusable = true
+                        val popupWindow = PopupWindow(popupView, width, height, focusable)
+                        popupView.RestartButton.setOnClickListener { popupWindow.dismiss(); game.reset(); updateUI() }
+                        popupView.MenuButton.setOnClickListener { popupWindow.dismiss(); finish() }
+                        popupWindow.showAtLocation(
+                            findViewById(android.R.id.content),
+                            Gravity.CENTER,
+                            0,
+                            0
+                        )
+                        val sharedPref = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE)
+                        val oldHighscore = sharedPref.getInt(GUESSING_HIGHSCORE, 0)
+                        if (oldHighscore < game.score) {
+                            val editor = sharedPref.edit()
+                            editor.putInt(GUESSING_HIGHSCORE, game.score)
+                            editor.apply()
 
-                    game.reset()
+                            // TODO display that new highscore was achieved.
+                        }
+                    } else {
+                        updateUI()
+                    }
                 }
-                updateUI()
-            }
+                override fun onAnimationEnd(animation: Animation?) {
+                    questionFinish.visibility = View.GONE
+                    gameFrozen = false
+                }
 
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
-        })
-        questionFinish.startAnimation(anim)
-
+                override fun onAnimationStart(animation: Animation?) {
+                    gameFrozen = true
+                }
+            })
+            questionFinish.startAnimation(anim)
+        }
     }
 
     private fun setScore() {

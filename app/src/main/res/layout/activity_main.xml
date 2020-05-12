@@ -120,11 +120,11 @@
             android:text="Word" />
 
         <Button
-            android:id="@+id/wordModeButton2"
+            android:id="@+id/highScoreButton"
             style="@style/defaultButton"
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:onClick="launchWordMode"
+            android:onClick="launchHighScore"
             android:text="Highscores" />
 
     </LinearLayout>
