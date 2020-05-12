@@ -10,6 +10,9 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import com.example.handsight.Constants.CHALLENGE_HIGHSCORE
+import com.example.handsight.Constants.HIGHSCORE_NAME
+import com.example.handsight.Constants.PRIVATE_MODE
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
 import logic.ImitationChallengeGame
 import java.util.*
@@ -140,6 +143,18 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
                 game.performanceScore = 0
                 if (game.finished) {
+                    val sharedPref = getSharedPreferences(
+                        HIGHSCORE_NAME,
+                        PRIVATE_MODE
+                    )
+                    val oldHighscore = sharedPref.getInt(CHALLENGE_HIGHSCORE, 0)
+                    if (oldHighscore < game.score) {
+                        val editor = sharedPref.edit()
+                        editor.putInt(CHALLENGE_HIGHSCORE, game.score)
+                        editor.apply()
+
+                        // TODO display that new highscore was achieved.
+                    }
                     game.reset()
                 }
 
