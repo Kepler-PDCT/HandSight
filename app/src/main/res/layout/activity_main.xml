@@ -29,6 +29,7 @@
             android:shadowRadius="10"
             android:translationZ="50dp"
             app:srcCompat="@drawable/ic_header2" />
+
     </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -96,6 +97,14 @@
             android:onClick="launchWordMode"
             style="@style/defaultButton"
             android:text="Word" />
+
+        <Button
+            android:id="@+id/wordModeButton2"
+            style="@style/defaultButton"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:onClick="launchWordMode"
+            android:text="Highscores" />
 
     </LinearLayout>
 
