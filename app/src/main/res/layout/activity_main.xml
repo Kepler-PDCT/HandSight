@@ -30,8 +30,7 @@
             android:shadowDy="20"
             android:shadowRadius="10"
             android:translationZ="50dp"
-            app:srcCompat="@drawable/ic_header2"
-            />
+            app:srcCompat="@drawable/ic_header2" />
 
     </FrameLayout>
 
@@ -159,5 +158,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.05608755" />
+
+    <ImageView
+        android:id="@+id/volumeIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:elevation="51dp"
+        android:focusable="true"
+        android:onClick="toggleSoundOption"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_volume_on"
+        android:tint="#ffffff"
+        android:translationZ="51dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
