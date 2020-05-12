@@ -1,5 +1,6 @@
 package com.example.handsight
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewStub
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.example.handsight.Constants.CHALLENGE_HIGHSCORE
@@ -33,6 +35,34 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
     override val contentViewLayoutId: Int
         get() = R.layout.activity_challenge_mode
     private var soundEnabled = true
+
+    fun loadSoundOption(): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        graphicalSoundToggle(pref.getBoolean(SOUND_NAME, true))
+        return pref.getBoolean(SOUND_NAME, true)
+    }
+
+    fun toggleSoundOption(view: View): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        val state = pref.getBoolean(SOUND_NAME, true).not()
+        val editor = pref.edit()
+        editor.putBoolean(SOUND_NAME, state)
+        editor.apply()
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        graphicalSoundToggle(state)
+        return state
+    }
+
+    fun graphicalSoundToggle(state: Boolean){
+        if (state){
+            val res = resources.getDrawable(R.drawable.volume_on)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
+        }
+        else{
+            val res = resources.getDrawable(R.drawable.volume_mute)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
+        }
+    }
 
     private var correctAnswerCountdown = object : CountDownTimer(2000, 100) {
         override fun onTick(millisUntilFinished: Long) {
@@ -83,6 +113,8 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
         val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
         soundEnabled = pref.getBoolean(SOUND_NAME, true)
+
+        loadSoundOption()
     }
 
     private fun updateUI() {
