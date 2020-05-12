@@ -2,17 +2,118 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    style="@style/defaultBackground">
 
-    <TextView
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation="50dp"
+        android:translationZ="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:elevation="50dp"
+            android:outlineAmbientShadowColor="#000"
+            android:shadowColor="#000"
+            android:shadowDx="20"
+            android:shadowDy="20"
+            android:shadowRadius="10"
+            android:translationZ="50dp"
+            app:srcCompat="@drawable/ic_header2" />
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="50dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="50dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:elevation="10dp"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingTop="350dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline11"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:text="Let's start playing!"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/learningModeButton"
+            style="@style/defaultButton"
+            android:onClick="launchLearningMode"
+            android:text="Learning" />
+
+        <Button
+            android:id="@+id/imitationModeButton"
+            style="@style/defaultButton"
+            android:onClick="launchImitationMode"
+            android:text="Imitation" />
+
+        <Button
+            android:id="@+id/challengeModeButton"
+            android:onClick="launchChallengeMode"
+            style="@style/defaultButton"
+            android:text="Challenge"/>
+
+        <Button
+            android:id="@+id/wordModeButton"
+            android:onClick="launchWordMode"
+            style="@style/defaultButton"
+            android:text="Word" />
+
+        <Button
+            android:id="@+id/wordModeButton2"
+            style="@style/defaultButton"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:onClick="launchWordMode"
+            android:text="Highscores" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="60dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

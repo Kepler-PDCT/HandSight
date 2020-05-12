@@ -1,11 +1,67 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
 
+    <style name="defaultButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:backgroundTint">#F25767</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="defaultBackground">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/default_background</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="card_current">
+        <item name="android:backgroundTint">#D5D5D5</item>
+    </style>
+    <style name="card_text_current">
+        <item name="android:textColor">#777</item>
+    </style>
+
+
+    <style name="card_upcoming">
+        <item name="android:backgroundTint">#EEE</item>
+    </style>
+    <style name="card_text_upcoming">
+        <item name="android:textColor">#BBB</item>
+    </style>
+
+
+    <style name="card_success">
+        <item name="android:backgroundTint">#84D86D</item>
+    </style>
+    <style name="card_fail">
+        <item name="android:backgroundTint">#FF6347</item>
+    </style>
+    <style name="card_text_success">
+        <item name="android:textColor">#3CA33E</item>
+    </style>
+    <style name="card_text_fail">
+        <item name="android:textColor">#866347</item>
+    </style>
 </resources>
