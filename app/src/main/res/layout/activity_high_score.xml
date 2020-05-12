@@ -1,152 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnCount="2">
+        android:columnCount="2"
+        android:background="#00FF00">
 
         <TextView
             android:id="@+id/guessing_highscore_textview"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_light"
-            android:gravity="center"
-            android:text="GUESSING MODE:"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:textStyle="bold"
+            android:gravity="bottom|center"
             android:shadowColor="@color/text_shadow"
             android:shadowDx="2"
             android:shadowDy="2"
-            android:shadowRadius="4"/>
+            android:shadowRadius="4"
+            android:text="GUESSING MODE:"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/imitation_highscore_textview"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_dark"
-            android:gravity="center"
+            android:gravity="bottom|center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
             android:text="IMITATION MODE:"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="4"/>
+            android:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/guessing_highscore_score_text"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_light"
             android:gravity="center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10"
             android:text="0"
             android:textColor="@color/handsight_red"
             android:textSize="70dp"
             android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="10"/>/>
+            android:layout_rowWeight="1"/>/>
 
         <TextView
             android:id="@+id/imitation_highscore_score_text"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_dark"
             android:gravity="center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10"
             android:text="0"
             android:textColor="@color/handsight_red"
             android:textSize="70dp"
             android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="10" />/>
+            android:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/challenge_highscore_textview"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_dark"
-            android:gravity="center"
+            android:gravity="bottom|center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
             android:text="CHALLENGE MODE:"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="4"/>
+            android:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/word_highscore_textview"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_light"
-            android:gravity="center"
+            android:gravity="bottom|center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
             android:text="WORD MODE:"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="4"/>
+            android:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/challenge_highscore_score_text"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_dark"
             android:gravity="center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10"
             android:text="0"
             android:textColor="@color/handsight_red"
             android:textSize="70dp"
             android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="10" />/>
+            android:layout_rowWeight="1"/>
 
         <TextView
             android:id="@+id/word_highscore_score_text"
             android:layout_width="0dp"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
             android:layout_columnWeight="1"
             android:layout_gravity="fill_horizontal"
             android:background="@color/handsight_aqua_light"
             android:gravity="center"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10"
             android:text="0"
             android:textColor="@color/handsight_red"
             android:textSize="70dp"
             android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="10" />
+            android:layout_rowWeight="1"/>
 
     </GridLayout>
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>
