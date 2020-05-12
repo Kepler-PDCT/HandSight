@@ -70,8 +70,6 @@ object Utils {
         var perf = performanceScore/100
         var color = Color.HSVToColor(floatArrayOf(27F+(100*perf).toFloat(), 0.82F, 0.70F+0.15F*perf))
 
-        Log.d("ANIM", activity.ProgressFill.cardBackgroundColor.defaultColor.toString())
-
         val valueAnimator = ValueAnimator.ofArgb(lastColor, color)
         valueAnimator.addUpdateListener {
             val value = it.animatedValue as Int
