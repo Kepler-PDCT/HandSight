@@ -1,53 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
-    android:foregroundGravity="center_horizontal"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context=".HighScoreActivity">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/GuessingModeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10px"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="Guessing Mode:100" />
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="2">
 
-    <TextView
-        android:id="@+id/ImitationModeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10px"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="Imitation Mode::100" />
+        <TextView
+            android:id="@+id/guessing_highscore_textview"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_light"
+            android:gravity="center"
+            android:text="GUESSING MODE:"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"/>
 
-    <TextView
-        android:id="@+id/ChallengeModeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10px"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="Challenge Mode:100" />
+        <TextView
+            android:id="@+id/imitation_highscore_textview"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_dark"
+            android:gravity="center"
+            android:text="IMITATION MODE:"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"/>
 
-    <TextView
-        android:id="@+id/WordModeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10px"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="Word Mode: 100" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/guessing_highscore_score_text"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_light"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/handsight_red"
+            android:textSize="70dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10"/>/>
+
+        <TextView
+            android:id="@+id/imitation_highscore_score_text"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_dark"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/handsight_red"
+            android:textSize="70dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10" />/>
+
+        <TextView
+            android:id="@+id/challenge_highscore_textview"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_dark"
+            android:gravity="center"
+            android:text="CHALLENGE MODE:"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"/>
+
+        <TextView
+            android:id="@+id/word_highscore_textview"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_light"
+            android:gravity="center"
+            android:text="WORD MODE:"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"/>
+
+        <TextView
+            android:id="@+id/challenge_highscore_score_text"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_dark"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/handsight_red"
+            android:textSize="70dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10" />/>
+
+        <TextView
+            android:id="@+id/word_highscore_score_text"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:background="@color/handsight_aqua_light"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/handsight_red"
+            android:textSize="70dp"
+            android:textStyle="bold"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10" />
+
+    </GridLayout>
+</androidx.core.widget.NestedScrollView>
