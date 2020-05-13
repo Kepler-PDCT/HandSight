@@ -92,8 +92,8 @@ class GuessingGameActivity : AppCompatActivity() {
                         val inflater: LayoutInflater =
                             getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                         val popupView = inflater.inflate(R.layout.finish_popup, null)
-                        val width = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
-                        val height = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+                        val width = LinearLayout.LayoutParams.MATCH_PARENT
+                        val height = LinearLayout.LayoutParams.MATCH_PARENT
                         val focusable = false
                         val popupWindow = PopupWindow(popupView, width, height, focusable)
                         popupView.RestartButton.setOnClickListener { popupWindow.dismiss(); game.reset(); updateUI(); gameFrozen = false }
