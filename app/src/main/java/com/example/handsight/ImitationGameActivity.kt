@@ -213,12 +213,15 @@ class ImitationGameActivity : AbstractCameraXActivity() {
                 if (game.finished) {
                     val inflater : LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val popupView = inflater.inflate(R.layout.finish_popup,null)
-                    val width = LinearLayout.LayoutParams.WRAP_CONTENT
-                    val height = LinearLayout.LayoutParams.WRAP_CONTENT
-                    val focusable = true
+                    val width = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+                    val height = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+                    val focusable = false
                     val popupWindow = PopupWindow(popupView, width, height, focusable)
                     popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false}
                     popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
+                    popupView.scoreTextView.text = "Score: ${game.score}"
+                    val highScore = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE).getInt(Constants.IMITATION_HIGHSCORE, 0)
+                    popupView.HighscoreTextView.text = "High Score: $highScore"
                     popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0)
                     val sharedPref = getSharedPreferences(
                         HIGHSCORE_NAME,

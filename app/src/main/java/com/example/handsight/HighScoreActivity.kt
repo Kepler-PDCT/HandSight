@@ -27,7 +27,7 @@ class HighScoreActivity : AppCompatActivity() {
         imitationHighscore = sharedPref.getInt(IMITATION_HIGHSCORE, 0)
         challengeHighscore = sharedPref.getInt(CHALLENGE_HIGHSCORE, 0)
         wordHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
-        guessing_highscore_score_text.text = "$wordHighscore" //get from local storage
+        guessing_highscore_score_text.text = "$guessingHighscore" //get from local storage
         imitation_highscore_score_text.text = "$imitationHighscore"
         challenge_highscore_score_text.text = "$challengeHighscore"
         word_highscore_score_text.text = "$wordHighscore"

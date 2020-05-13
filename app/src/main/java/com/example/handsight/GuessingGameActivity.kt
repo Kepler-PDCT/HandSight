@@ -17,6 +17,7 @@ import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
 import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.finish_popup.view.*
 import logic.GuessingGame
 
@@ -91,12 +92,15 @@ class GuessingGameActivity : AppCompatActivity() {
                         val inflater: LayoutInflater =
                             getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                         val popupView = inflater.inflate(R.layout.finish_popup, null)
-                        val width = LinearLayout.LayoutParams.WRAP_CONTENT
-                        val height = LinearLayout.LayoutParams.WRAP_CONTENT
-                        val focusable = true
+                        val width = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+                        val height = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+                        val focusable = false
                         val popupWindow = PopupWindow(popupView, width, height, focusable)
-                        popupView.RestartButton.setOnClickListener { popupWindow.dismiss(); game.reset(); updateUI() }
+                        popupView.RestartButton.setOnClickListener { popupWindow.dismiss(); game.reset(); updateUI(); gameFrozen = false }
                         popupView.MenuButton.setOnClickListener { popupWindow.dismiss(); finish() }
+                        popupView.scoreTextView.text = "Score: ${game.score}"
+                        val highScore = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE).getInt(GUESSING_HIGHSCORE, 0)
+                        popupView.HighscoreTextView.text = "High Score: $highScore"
                         popupWindow.showAtLocation(
                             findViewById(android.R.id.content),
                             Gravity.CENTER,
@@ -118,7 +122,8 @@ class GuessingGameActivity : AppCompatActivity() {
                 }
                 override fun onAnimationEnd(animation: Animation?) {
                     questionFinish.visibility = View.GONE
-                    gameFrozen = false
+                    if(!game.finished)
+                        gameFrozen = false
                 }
 
                 override fun onAnimationStart(animation: Animation?) {
