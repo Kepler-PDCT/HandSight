@@ -29,21 +29,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <ImageView
                 android:id="@+id/volumeIcon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="right"
-                android:layout_margin="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/volume_on"
+                android:onClick="toggleSoundOption"
+                android:src="@drawable/ic_volume_on"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:elevation="51dp"
-                android:translationZ="51dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="toggleSoundOption"/>
+                style="@style/volume_button_dark" />
         </RelativeLayout>
 
         <ImageView

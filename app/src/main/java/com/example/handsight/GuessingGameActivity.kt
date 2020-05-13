@@ -1,4 +1,5 @@
 package com.example.handsight
+
 import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -51,11 +52,11 @@ class GuessingGameActivity : AppCompatActivity() {
 
     fun graphicalSoundToggle(state: Boolean){
         if (state){
-            val res = resources.getDrawable(R.drawable.volume_on)
+            val res = resources.getDrawable(R.drawable.ic_volume_on)
             findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
         }
         else{
-            val res = resources.getDrawable(R.drawable.volume_mute)
+            val res = resources.getDrawable(R.drawable.ic_volume_mute)
             findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
         }
     }
