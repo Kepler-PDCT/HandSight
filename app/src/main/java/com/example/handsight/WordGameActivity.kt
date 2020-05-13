@@ -7,11 +7,13 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
 import com.airbnb.paris.Paris
+import kotlinx.android.synthetic.main.finish_popup.view.*
 import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
 import com.example.handsight.Constants.SOUND_NAME
@@ -85,7 +87,6 @@ class WordGameActivity : AbstractCameraXActivity() {
         super.onCreate(savedInstanceState)
         wordContainer = findViewById(R.id.wordContainer)
         questionCountdownText = findViewById(R.id.questionCountdown)
-        // perfText = findViewById(R.id.PerfText)
         inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
@@ -99,24 +100,28 @@ class WordGameActivity : AbstractCameraXActivity() {
         loadSoundOption()
     }
 
+    var gameFrozen = false
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun applyToUiAnalyzeImageResult(result: AnalysisResult?) {
-        mMovingAvgSum += result!!.moduleForwardDuration
-        mMovingAvgQueue.add(result!!.moduleForwardDuration)
-        if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
-            mMovingAvgSum -= mMovingAvgQueue.remove()
-        }
-        predictions = result
+        if (!gameFrozen) {
+            mMovingAvgSum += result!!.moduleForwardDuration
+            mMovingAvgQueue.add(result!!.moduleForwardDuration)
+            if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
+                mMovingAvgSum -= mMovingAvgQueue.remove()
+            }
+            predictions = result
 
-        game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+            game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+            Utils.updatePerformanceMeter(this, game.performanceScore)
+            for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
+                Log.d("TEST", prediction)
+            }
 
-        for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
-            Log.d("TEST", prediction)
-        }
-
-        if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
-            game.advanceWord()
-            updateLetter(true)
+            if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
+                game.advanceWord()
+                updateLetter(true)
+            }
         }
     }
 
@@ -138,28 +143,39 @@ class WordGameActivity : AbstractCameraXActivity() {
             findViewById<TextView>(R.id.questionCountdown).text = "0"
             updateUI(succeded)
             game.advanceGame()
-            if (game.finished) {
-                val sharedPref = getSharedPreferences(
-                    HIGHSCORE_NAME,
-                    PRIVATE_MODE
-                )
-                val oldHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
-                if (oldHighscore < game.score) {
-                    val editor = sharedPref.edit()
-                    editor.putInt(WORD_HIGHSCORE, game.score)
-                    editor.apply()
-
-                    // TODO display that new highscore was achieved.
-                }
-                game.reset()
-            }
-            delayTime = 2000
+            delayTime = 500
         }
-        Handler().postDelayed({
-            game.performanceScore = 0
-            questionCountDown.start()
-            updateUI(succeded)
-        }, delayTime)
+        if (game.finished) {
+            gameFrozen = true
+            val inflater : LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val popupView = inflater.inflate(R.layout.finish_popup,null)
+            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val focusable = false
+            val popupWindow = PopupWindow(popupView, width, height, focusable)
+            popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); questionCountDown.start(); updateUI(succeded); gameFrozen = false}
+            popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
+            popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0)
+            val sharedPref = getSharedPreferences(
+                HIGHSCORE_NAME,
+                PRIVATE_MODE
+            )
+            val oldHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
+            if (oldHighscore < game.score) {
+                val editor = sharedPref.edit()
+                editor.putInt(WORD_HIGHSCORE, game.score)
+                editor.apply()
+
+                // TODO display that new highscore was achieved.
+            }
+        } else {
+            Handler().postDelayed({
+                game.performanceScore = 0
+                questionCountDown.start()
+                updateUI(succeded)
+            }, delayTime)
+
+        }
     }
 
     private fun updateUI(succeded: Boolean) {

@@ -68,4 +68,9 @@ class MainActivity : AppCompatActivity() {
         val myIntent = Intent(this, WordGameActivity::class.java)
         startActivity(myIntent)
     }
+
+    fun launchHighScore(view: View){
+        val myIntent = Intent(this,  HighScoreActivity::class.java)
+        startActivity(myIntent)
+    }
 }

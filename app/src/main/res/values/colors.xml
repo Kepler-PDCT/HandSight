@@ -5,4 +5,11 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorCorrect">#62CF67</color>
     <color name="black_overlay">#66000000</color>
+
+    <color name="handsight_aqua_dark">#48757e</color>
+    <color name="handsight_aqua_light">#538791</color>
+    <color name="handsight_red">#f25767</color>
+    <color name="white">#ffffff</color>
+    <color name="text_shadow">#7F000000</color>
+    <color name="text_shadow_white">#FFFFFF</color>
 </resources>
