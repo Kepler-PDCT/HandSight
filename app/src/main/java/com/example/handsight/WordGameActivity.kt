@@ -67,12 +67,13 @@ class WordGameActivity : AbstractCameraXActivity() {
         return state
     }
 
-    fun graphicalSoundToggle(state: Boolean) {
-        if (state) {
-            val res = resources.getDrawable(R.drawable.volume_on)
+    fun graphicalSoundToggle(state: Boolean){
+        if (state){
+            val res = resources.getDrawable(R.drawable.ic_volume_on)
             findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
-        } else {
-            val res = resources.getDrawable(R.drawable.volume_mute)
+        }
+        else{
+            val res = resources.getDrawable(R.drawable.ic_volume_mute)
             findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
         }
     }
