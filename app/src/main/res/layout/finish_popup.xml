@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/defaultBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:background="#FFFFFF"
+    android:backgroundTint="@color/handsight_aqua_light"
     android:foregroundGravity="center_horizontal"
     android:orientation="vertical"
-    style="@style/defaultBackground"
     app:layout_anchorGravity="center_horizontal">
 
     <TextView
@@ -20,7 +21,9 @@
         android:layout_marginStart="92dp"
         android:layout_marginTop="104dp"
         android:fontFamily="sans-serif-black"
-        android:text="Congratulations! The game is done"
+        android:paddingTop="15dp"
+        android:text="The game is done!"
+        android:textColor="@color/white"
         android:textSize="24sp" />
 
     <TextView
@@ -32,6 +35,7 @@
         android:layout_marginStart="180dp"
         android:fontFamily="sans-serif"
         android:text="Score:"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <TextView
@@ -43,13 +47,16 @@
         android:layout_marginStart="168dp"
         android:fontFamily="sans-serif"
         android:text="Highscore:"
+        android:textColor="@color/white"
         android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5px"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="40dp">
 
         <Button
             android:id="@+id/RestartButton"
@@ -58,7 +65,10 @@
             android:layout_margin="10px"
             android:layout_marginStart="50dp"
             android:layout_marginBottom="115dp"
-            android:text="Restart" />
+            android:backgroundTint="@color/handsight_red"
+            android:fontFamily="sans-serif-black"
+            android:text="Restart"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/MenuButton"
@@ -68,7 +78,10 @@
             android:layout_marginStart="52dp"
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="115dp"
-            android:text="Main menu" />
+            android:backgroundTint="@color/handsight_red"
+            android:fontFamily="sans-serif-black"
+            android:text="Main menu"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </LinearLayout>
