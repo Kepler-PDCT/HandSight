@@ -185,7 +185,7 @@ class ImitationGameActivity : AbstractCameraXActivity() {
     }
 
     private fun finishQuestion(succeeded: Boolean) {
-
+        correctAnswerCountdown.cancel()
         val doneSound: MediaPlayer
         if (succeeded) {
             questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
