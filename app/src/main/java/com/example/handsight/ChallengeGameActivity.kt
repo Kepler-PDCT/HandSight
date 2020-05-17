@@ -17,6 +17,8 @@ import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
 import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
+import kotlinx.android.synthetic.main.activity_guessing_mode.questionFinish
+import kotlinx.android.synthetic.main.activity_imitation_mode.*
 import kotlinx.android.synthetic.main.finish_popup.view.*
 import logic.ImitationChallengeGame
 import java.util.*
@@ -71,15 +73,10 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
         override fun onFinish() {
             correctAnswerCountdownText.text = "0"
-            Handler().postDelayed(
-                {
-                    correctAnswerCountdownText.text = ""
-                    game.makeGuess(predictions.topNClassNames[0]!!.single())
-                    answerCurrentlyCorrect = false
-                    finishQuestion(true)
-                },
-                1000
-            )
+            correctAnswerCountdownText.text = ""
+            game.makeGuess(predictions.topNClassNames[0]!!.single())
+            answerCurrentlyCorrect = false
+            finishQuestion(true)
         }
     }
     private var questionCountDown = object : CountDownTimer(game.timerLength, 100) {
@@ -140,7 +137,6 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
                         bestGuessSoFar = i
                     }
                 }
-                Log.d("TEST2", predictions.topNClassNames[i].toString())
             }
             game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
             Utils.updatePerformanceMeter(this, game.performanceScore)
@@ -157,6 +153,7 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
 
     private fun finishQuestion(succeeded: Boolean) {
         correctAnswerCountdown.cancel()
+        questionCountDown.cancel()
         val doneSound: MediaPlayer
         if (succeeded) {
             questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
@@ -177,13 +174,14 @@ class ChallengeGameActivity : AbstractCameraXActivity() {
                 }
                 game.performanceScore = 0
                 if (game.finished) {
+                    blackFrameView.alpha = 1F
                     val inflater : LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val popupView = inflater.inflate(R.layout.finish_popup,null)
-                    val width = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
-                    val height = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+                    val width = LinearLayout.LayoutParams.MATCH_PARENT
+                    val height = LinearLayout.LayoutParams.MATCH_PARENT
                     val focusable = false
                     val popupWindow = PopupWindow(popupView, width, height, focusable)
-                    popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false}
+                    popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false; blackFrameView.alpha = 0F}
                     popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
                     popupView.scoreTextView.text = "Score: ${game.score}"
                     val highScore = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE).getInt(Constants.CHALLENGE_HIGHSCORE, 0)

@@ -42,7 +42,7 @@ abstract class Game<T> (numberOfQuestions : Int) {
         score += incrementalScore
     }
 
-    protected fun updateCounter() {
+    fun updateCounter() {
         currentQuestionIndex++;
         if (currentQuestionIndex > numberOfQuestions) {
             finished = true
