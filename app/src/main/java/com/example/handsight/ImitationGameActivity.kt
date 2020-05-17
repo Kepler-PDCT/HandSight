@@ -1,19 +1,45 @@
 package com.example.handsight
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.graphics.Color
+import android.graphics.drawable.TransitionDrawable
+import android.content.Context
 import android.media.MediaPlayer
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import android.util.Log
-import android.view.TextureView
-import android.view.View
-import android.view.ViewStub
+import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.Guideline
+import com.example.handsight.Utils.updatePerformanceMeter
+import kotlinx.android.synthetic.main.activity_guessing_mode.questionFinish
+import kotlinx.android.synthetic.main.activity_imitation_mode.*
+import kotlinx.android.synthetic.main.progress_bar.*
+import kotlinx.android.synthetic.main.progress_bar.view.*
+import com.example.handsight.Constants.HIGHSCORE_NAME
+import com.example.handsight.Constants.IMITATION_HIGHSCORE
+import com.example.handsight.Constants.PRIVATE_MODE
+import com.example.handsight.Constants.SOUND_NAME
 import kotlinx.android.synthetic.main.activity_guessing_mode.*
+import kotlinx.android.synthetic.main.finish_popup.view.*
 import logic.ImitationChallengeGame
+import java.time.LocalDateTime
 import java.util.*
+
 
 class ImitationGameActivity : AbstractCameraXActivity() {
 
@@ -25,10 +51,12 @@ class ImitationGameActivity : AbstractCameraXActivity() {
     private val mMovingAvgQueue: Queue<Long> = LinkedList()
     private var answerCurrentlyCorrect: Boolean = false
     lateinit var correctAnswerCountdownText: TextView
-    lateinit var perfText: TextView
     lateinit var questionCountdownText: TextView
+    lateinit var progressBarPadding : Guideline
     override val contentViewLayoutId: Int
         get() = R.layout.activity_imitation_mode
+
+    private var soundEnabled = true
 
     private var correctAnswerCountdown = object : CountDownTimer(2000, 100) {
         override fun onTick(millisUntilFinished: Long) {
@@ -36,17 +64,40 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         }
 
         override fun onFinish() {
-            Log.d("aaa", predictions.topNClassNames[0]!!.single().toString())
             correctAnswerCountdownText.text = "0"
-            Handler().postDelayed(
-                {
-                    correctAnswerCountdownText.text = ""
-                    game.makeGuess(predictions.topNClassNames[0]!!.single())
-                    answerCurrentlyCorrect = false
-                    finishQuestion(true)
-                },
-                1000
-            )
+            correctAnswerCountdownText.text = ""
+            game.makeGuess(predictions.topNClassNames[0]!!.single())
+            answerCurrentlyCorrect = false
+            finishQuestion(true)
+
+        }
+    }
+
+    fun loadSoundOption(): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        graphicalSoundToggle(pref.getBoolean(SOUND_NAME, true))
+        return pref.getBoolean(SOUND_NAME, true)
+    }
+
+    fun toggleSoundOption(view: View): Boolean {
+        val pref = getSharedPreferences(SOUND_NAME, Context.MODE_PRIVATE)
+        val state = pref.getBoolean(SOUND_NAME, true).not()
+        val editor = pref.edit()
+        editor.putBoolean(SOUND_NAME, state)
+        editor.apply()
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        graphicalSoundToggle(state)
+        return state
+    }
+
+    fun graphicalSoundToggle(state: Boolean){
+        if (state){
+            val res = resources.getDrawable(R.drawable.ic_volume_on)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
+        }
+        else{
+            val res = resources.getDrawable(R.drawable.ic_volume_mute)
+            findViewById<ImageView>(R.id.volumeIcon).setImageDrawable(res)
         }
     }
 
@@ -70,12 +121,15 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         correctAnswerCountdownText = findViewById(R.id.correctAswerCountdown)
         correctAnswerCountdownText.text = ""
         questionCountdownText = findViewById(R.id.questionCountdown)
-        perfText = findViewById(R.id.PerfText)
-        perfText.text = ""
+        progressBarPadding = ProgressBar.InverseGuideline
 
         updateUI()
         questionStartTime = System.currentTimeMillis()
         questionCountDown.start()
+
+        val pref = getSharedPreferences(SOUND_NAME, MODE_PRIVATE)
+        soundEnabled = pref.getBoolean(SOUND_NAME, true)
+        loadSoundOption()
     }
 
     private fun updateUI() {
@@ -90,43 +144,43 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         findViewById<TextView>(R.id.scoreTextView)!!.setText("Score: ${game.score}")
     }
 
+    var gameFrozen = false
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun applyToUiAnalyzeImageResult(result: AnalysisResult?) {
-        mMovingAvgSum += result!!.moduleForwardDuration
-        mMovingAvgQueue.add(result!!.moduleForwardDuration)
-        if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
-            mMovingAvgSum -= mMovingAvgQueue.remove()
-        }
-        predictions = result
-        Log.d("TEST", result.topNClassNames[0].toString())
-        //Log.d("TEST", result.topNScores[0].toString())
-
-        for (i in 0 until predictions.topNClassNames.size) {
-            if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
-                perfText.text = predictions.topNScores[i].toString()
-                if (bestGuessSoFar > i) {
-                    bestGuessSoFar = i
-                }
-                Log.d("size", predictions.topNClassNames.size.toString())
-            } else {
-                perfText.text = ""
+        if(!gameFrozen) {
+            mMovingAvgSum += result!!.moduleForwardDuration
+            mMovingAvgQueue.add(result!!.moduleForwardDuration)
+            if (mMovingAvgQueue.size > MOVING_AVG_PERIOD) {
+                mMovingAvgSum -= mMovingAvgQueue.remove()
             }
+            predictions = result
+
+            for (i in 0 until predictions.topNClassNames.size) {
+                if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
+                    if (bestGuessSoFar > i) {
+                        bestGuessSoFar = i
+                    }
+                }
+            }
+            if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
+                correctAnswerCountdown.start()
+                answerCurrentlyCorrect = true
+            } else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
+                correctAnswerCountdownText.text = ""
+                correctAnswerCountdown.cancel()
+                answerCurrentlyCorrect = false
+            }
+            game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
+            updatePerformanceMeter(this, game.performanceScore)
         }
-        if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
-            correctAnswerCountdown.start()
-            answerCurrentlyCorrect = true
-        } else if (!game.isCorrect((predictions.topNClassNames[0]!!.single()))) {
-            correctAnswerCountdownText.text = ""
-            correctAnswerCountdown.cancel()
-            answerCurrentlyCorrect = false
-        }
-        game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
     }
 
-    private fun finishQuestion(succeeded:Boolean) {
-
-        val doneSound : MediaPlayer
-        if(succeeded) {
+    private fun finishQuestion(succeeded: Boolean) {
+        correctAnswerCountdown.cancel()
+        questionCountDown.cancel()
+        val doneSound: MediaPlayer
+        if (succeeded) {
             questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
             doneSound = MediaPlayer.create(this, R.raw.success_perc)
         } else {
@@ -139,8 +193,10 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         anim.repeatMode = Animation.REVERSE
         anim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationRepeat(animation: Animation?) {
-                doneSound.start()
-                doneSound.setOnCompletionListener { doneSound.stop() }
+                if (soundEnabled) {
+                    doneSound.start()
+                    doneSound.setOnCompletionListener { doneSound.stop() }
+                }
             }
 
             override fun onAnimationEnd(animation: Animation?) {
@@ -148,21 +204,47 @@ class ImitationGameActivity : AbstractCameraXActivity() {
 
                 game.performanceScore = 0
                 if (game.finished) {
-                    game.reset()
+                    blackFrameView.alpha = 1F
+                    val inflater : LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    val popupView = inflater.inflate(R.layout.finish_popup,null)
+                    val width = LinearLayout.LayoutParams.MATCH_PARENT
+                    val height = LinearLayout.LayoutParams.MATCH_PARENT
+                    val focusable = false
+                    val popupWindow = PopupWindow(popupView, width, height, focusable)
+                    popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false; blackFrameView.alpha = 0F}
+                    popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
+                    popupView.scoreTextView.text = "Score: ${game.score}"
+                    val highScore = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE).getInt(Constants.IMITATION_HIGHSCORE, 0)
+                    popupView.HighscoreTextView.text = "High Score: $highScore"
+                    popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0)
+                    val sharedPref = getSharedPreferences(
+                        HIGHSCORE_NAME,
+                        PRIVATE_MODE
+                    )
+                    val oldHighscore = sharedPref.getInt(IMITATION_HIGHSCORE, 0)
+                    if (oldHighscore < game.score) {
+                        val editor = sharedPref.edit()
+                        editor.putInt(IMITATION_HIGHSCORE, game.score)
+                        editor.apply()
+
+                        // TODO display that new highscore was achieved.
+                    }
                 }
 
-
-                bestGuessSoFar = 99
-                questionCountDown.start()
-                updateUI()
-                Log.d("TEST", game.score.toString())
+                else {
+                    bestGuessSoFar = 99
+                    questionCountDown.start()
+                    updateUI()
+                    gameFrozen = false
+                }
             }
 
             override fun onAnimationStart(animation: Animation?) {
                 questionFinish.visibility= View.VISIBLE
+                gameFrozen = true
+
             }
         })
-
         questionFinish.startAnimation(anim)
 
     }

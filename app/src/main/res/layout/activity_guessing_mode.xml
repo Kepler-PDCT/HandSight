@@ -13,14 +13,31 @@
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="58dp">
 
-        <TextView
-            android:id="@+id/questionTextView"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Question 1 of 10"
-            android:textAlignment="center"
-            android:textSize="30sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/questionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Question 1 of 10"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/volumeIcon"
+                android:onClick="toggleSoundOption"
+                android:src="@drawable/ic_volume_on"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/volume_button_dark" />
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/handImageView"

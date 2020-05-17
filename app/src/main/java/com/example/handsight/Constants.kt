@@ -8,6 +8,8 @@ object Constants {
     val CHALLENGE_HIGHSCORE = "CHALLENGE_HIGHSCORE"
     val WORD_HIGHSCORE = "WORD_HIGHSCORE"
 
+    val SOUND_NAME = "Sound_option"
+
 
     const val TAG = "CRASH"
     val IMAGENET_CLASSES = arrayOf(

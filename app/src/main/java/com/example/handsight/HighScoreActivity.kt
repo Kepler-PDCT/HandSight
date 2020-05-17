@@ -13,23 +13,23 @@ import com.example.handsight.Constants.WORD_HIGHSCORE
 import kotlinx.android.synthetic.main.activity_high_score.*
 
 class HighScoreActivity : AppCompatActivity() {
-    var guessingHighscore = 0F
-    var imitationHighscore = 0F
-    var challengeHighscore = 0F
-    var wordHighscore = 0F
+    var guessingHighscore = 0
+    var imitationHighscore = 0
+    var challengeHighscore = 0
+    var wordHighscore = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_high_score)
         val sharedPref: SharedPreferences = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE)
-        guessingHighscore = sharedPref.getFloat(GUESSING_HIGHSCORE, 0F)
-        imitationHighscore = sharedPref.getFloat(IMITATION_HIGHSCORE, 0F)
-        challengeHighscore = sharedPref.getFloat(CHALLENGE_HIGHSCORE, 0F)
-        wordHighscore = sharedPref.getFloat(WORD_HIGHSCORE, 0F)
-        GuessingModeText.text = "Guessing Mode: $wordHighscore" //get from local storage
-        ImitationModeText.text = "Imitation Mode: $imitationHighscore"
-        ChallengeModeText.text = "Challenge Mode: $challengeHighscore"
-        WordModeText.text = "Word Mode: $wordHighscore"
+        guessingHighscore = sharedPref.getInt(GUESSING_HIGHSCORE, 0)
+        imitationHighscore = sharedPref.getInt(IMITATION_HIGHSCORE, 0)
+        challengeHighscore = sharedPref.getInt(CHALLENGE_HIGHSCORE, 0)
+        wordHighscore = sharedPref.getInt(WORD_HIGHSCORE, 0)
+        guessing_highscore_score_text.text = "$guessingHighscore" //get from local storage
+        imitation_highscore_score_text.text = "$imitationHighscore"
+        challenge_highscore_score_text.text = "$challengeHighscore"
+        word_highscore_score_text.text = "$wordHighscore"
     }
 }

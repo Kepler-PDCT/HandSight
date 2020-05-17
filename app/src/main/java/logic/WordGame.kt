@@ -32,11 +32,8 @@ class WordGame : Game<String>(3) {
             if (confBonus > 20){
                 confBonus = 20f
             }
-            performanceScore = (100 - (pos+1)*20 + confBonus).roundToInt()
-            Log.d("perf", topKScores[pos].toString())
+            performanceScore = (100 - (pos+1)*33 + confBonus).roundToInt()
         }
-        Log.d("perf", performanceScore.toString())
-
     }
 
     fun checkPredictions (predictions:List<Char>) : Boolean {
