@@ -139,7 +139,7 @@
                 style="@style/homeScreenHorzButton"
                 android:layout_width="match_parent"
                 android:onClick="launchHighScore"
-                android:text="Highscores" />
+                android:text="High scores" />
 
         </LinearLayout>
 

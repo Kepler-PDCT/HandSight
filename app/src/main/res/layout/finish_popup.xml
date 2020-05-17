@@ -1,87 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/defaultBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
-    android:background="#FFFFFF"
-    android:backgroundTint="@color/handsight_aqua_light"
-    android:foregroundGravity="center_horizontal"
-    android:orientation="vertical"
-    app:layout_anchorGravity="center_horizontal">
-
-    <TextView
-        android:id="@+id/congratsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10px"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="104dp"
-        android:fontFamily="sans-serif-black"
-        android:paddingTop="15dp"
-        android:text="The game is done!"
-        android:textColor="@color/white"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/scoreTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="25px"
-        android:layout_marginStart="180dp"
-        android:fontFamily="sans-serif"
-        android:text="Score:"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/HighscoreTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="25px"
-        android:layout_marginStart="168dp"
-        android:fontFamily="sans-serif"
-        android:text="Highscore:"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+    android:background="#AA000000">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        style="@style/defaultBackground"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5px"
-        android:gravity="center_horizontal"
-        android:paddingTop="10dp"
-        android:paddingBottom="40dp">
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/handsight_aqua_light"
+        android:foregroundGravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_anchorGravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="12dp">
 
-        <Button
-            android:id="@+id/RestartButton"
-            android:layout_width="133dp"
-            android:layout_height="43dp"
-            android:layout_margin="10px"
-            android:layout_marginStart="50dp"
-            android:layout_marginBottom="115dp"
-            android:backgroundTint="@color/handsight_red"
+        <TextView
+            android:id="@+id/congratsTextView"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_weight="1"
+            android:autoSizeTextType="uniform"
             android:fontFamily="sans-serif-black"
-            android:text="Restart"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="The game is done!"
             android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/MenuButton"
-            android:layout_width="134dp"
-            android:layout_height="45dp"
-            android:layout_margin="10px"
-            android:layout_marginStart="52dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="115dp"
-            android:backgroundTint="@color/handsight_red"
-            android:fontFamily="sans-serif-black"
-            android:text="Main menu"
-            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/scoreTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="25px"
+            android:layout_marginStart="180dp"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:text="Score:"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/HighscoreTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="25px"
+            android:layout_marginStart="168dp"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:text="High score:"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_weight="1"
+            android:paddingTop="10dp">
+
+            <Button
+                android:id="@+id/RestartButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play again"
+                android:theme="@style/defaultButton" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1" />
+
+            <Button
+                android:id="@+id/MenuButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Main menu"
+                android:theme="@style/defaultButton" />
+        </LinearLayout>
+
     </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

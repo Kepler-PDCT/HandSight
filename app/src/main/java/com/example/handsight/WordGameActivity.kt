@@ -113,7 +113,6 @@ class WordGameActivity : AbstractCameraXActivity() {
             predictions = result
 
             game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
-            Utils.updatePerformanceMeter(this, game.performanceScore)
             for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
                 Log.d("TEST", prediction)
             }
