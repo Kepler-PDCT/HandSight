@@ -18,6 +18,7 @@ import com.example.handsight.Constants.HIGHSCORE_NAME
 import com.example.handsight.Constants.PRIVATE_MODE
 import com.example.handsight.Constants.SOUND_NAME
 import com.example.handsight.Constants.WORD_HIGHSCORE
+import kotlinx.android.synthetic.main.activity_imitation_mode.*
 import logic.WordGame
 import java.util.*
 
@@ -88,7 +89,6 @@ class WordGameActivity : AbstractCameraXActivity() {
         wordContainer = findViewById(R.id.wordContainer)
         questionCountdownText = findViewById(R.id.questionCountdown)
         inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        Log.d("TEST", game.getQuestion().correctAnswer.toString())
 
         updateUI(true)
 
@@ -113,10 +113,6 @@ class WordGameActivity : AbstractCameraXActivity() {
             predictions = result
 
             game.updatePerformanceScore(predictions.topNClassNames, predictions.topNScores)
-            for (prediction in predictions.topNClassNames.sliceArray(0..2)) {
-                Log.d("TEST", prediction)
-            }
-
             if (game.checkPredictions(predictions.topNClassNames.toList().map { it!!.single() })) {
                 game.advanceWord()
                 updateLetter(true)
@@ -146,17 +142,18 @@ class WordGameActivity : AbstractCameraXActivity() {
         }
         if (game.finished) {
             gameFrozen = true
+            blackFrameView.alpha = 1F
             val inflater: LayoutInflater =
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val popupView = inflater.inflate(R.layout.finish_popup, null)
-            val width = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+            val width = LinearLayout.LayoutParams.MATCH_PARENT
+            val height = LinearLayout.LayoutParams.MATCH_PARENT
             val focusable = false
             val popupWindow = PopupWindow(popupView, width, height, focusable)
             popupView.RestartButton.setOnClickListener {
                 popupWindow.dismiss(); game.reset(); questionCountDown.start(); updateUI(
                 succeded
-            ); gameFrozen = false
+            ); gameFrozen = false; blackFrameView.alpha = 0F
             }
             popupView.MenuButton.setOnClickListener { popupWindow.dismiss(); finish() }
             popupView.scoreTextView.text = "Score: ${game.score}"

@@ -64,17 +64,12 @@ class ImitationGameActivity : AbstractCameraXActivity() {
         }
 
         override fun onFinish() {
-            Log.d("aaa", predictions.topNClassNames[0]!!.single().toString())
             correctAnswerCountdownText.text = "0"
-            Handler().postDelayed(
-                {
-                    correctAnswerCountdownText.text = ""
-                    game.makeGuess(predictions.topNClassNames[0]!!.single())
-                    answerCurrentlyCorrect = false
-                    finishQuestion(true)
-                },
-                1000
-            )
+            correctAnswerCountdownText.text = ""
+            game.makeGuess(predictions.topNClassNames[0]!!.single())
+            answerCurrentlyCorrect = false
+            finishQuestion(true)
+
         }
     }
 
@@ -160,15 +155,12 @@ class ImitationGameActivity : AbstractCameraXActivity() {
                 mMovingAvgSum -= mMovingAvgQueue.remove()
             }
             predictions = result
-            Log.d("TEST", result.topNClassNames[0].toString())
-            //Log.d("TEST", result.topNScores[0].toString())
 
             for (i in 0 until predictions.topNClassNames.size) {
                 if (game.isCorrect(predictions.topNClassNames[i]!!.single())) {
                     if (bestGuessSoFar > i) {
                         bestGuessSoFar = i
                     }
-                    Log.d("size", predictions.topNClassNames.size.toString())
                 }
             }
             if (game.isCorrect(predictions.topNClassNames[0]!!.single()) && !answerCurrentlyCorrect) {
@@ -185,7 +177,8 @@ class ImitationGameActivity : AbstractCameraXActivity() {
     }
 
     private fun finishQuestion(succeeded: Boolean) {
-
+        correctAnswerCountdown.cancel()
+        questionCountDown.cancel()
         val doneSound: MediaPlayer
         if (succeeded) {
             questionFinish.setImageDrawable(getDrawable(R.drawable.checkmark))
@@ -211,13 +204,14 @@ class ImitationGameActivity : AbstractCameraXActivity() {
 
                 game.performanceScore = 0
                 if (game.finished) {
+                    blackFrameView.alpha = 1F
                     val inflater : LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val popupView = inflater.inflate(R.layout.finish_popup,null)
-                    val width = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
-                    val height = LinearLayout.LayoutParams.WRAP_CONTENT + 1000
+                    val width = LinearLayout.LayoutParams.MATCH_PARENT
+                    val height = LinearLayout.LayoutParams.MATCH_PARENT
                     val focusable = false
                     val popupWindow = PopupWindow(popupView, width, height, focusable)
-                    popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false}
+                    popupView.RestartButton.setOnClickListener {popupWindow.dismiss(); game.reset(); bestGuessSoFar = 99; questionCountDown.start(); updateUI(); gameFrozen = false; blackFrameView.alpha = 0F}
                     popupView.MenuButton.setOnClickListener {popupWindow.dismiss(); finish()}
                     popupView.scoreTextView.text = "Score: ${game.score}"
                     val highScore = getSharedPreferences(HIGHSCORE_NAME, PRIVATE_MODE).getInt(Constants.IMITATION_HIGHSCORE, 0)
@@ -243,7 +237,6 @@ class ImitationGameActivity : AbstractCameraXActivity() {
                     updateUI()
                     gameFrozen = false
                 }
-                Log.d("TEST", game.score.toString())
             }
 
             override fun onAnimationStart(animation: Animation?) {

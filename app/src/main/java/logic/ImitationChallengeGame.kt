@@ -35,9 +35,8 @@ class ImitationChallengeGame : Game<Char>(10) {
             updateScore(1)
             answerPresent = true
         }
-        advanceGame()
+        updateCounter()
         return answerPresent
-
     }
 
     fun updatePerformanceScore(topKPredictions: Array<String?>, topKScores: FloatArray){
@@ -51,14 +50,7 @@ class ImitationChallengeGame : Game<Char>(10) {
                 confBonus = 20f
             }
             performanceScore = (100 - (pos+1)*20 + confBonus).roundToInt()
-            Log.d("perf", topKScores[pos].toString())
         }
-        Log.d("perf", performanceScore.toString())
-
-    }
-
-    fun advanceGame () {
-        updateCounter()
     }
 
     override fun makeGuess(guess: Char): Boolean {
